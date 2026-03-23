@@ -1,108 +1,266 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Transcript Brain – Smart Summaries</title>
-  <style>
-    :root {
-      --bg: #0b1020;
-      --card: #121934;
-      --card-2: #0f1530;
-      --text: #ecf1ff;
-      --muted: #a7b0d2;
-      --line: #27315d;
-      --accent: #86a8ff;
-      --accent-2: #6ee7c8;
-    }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🧠 Transcript Brain</title>
 
-    body { margin:0; font-family: Inter, system-ui; background: var(--bg); color: var(--text);}    
-    .wrap { max-width:1200px; margin:auto; padding:20px; }
+<style>
+body {
+  font-family: Arial;
+  background: #0b1020;
+  color: white;
+  margin: 0;
+  padding: 20px;
+}
 
-    textarea, input, select { width:100%; padding:10px; border-radius:10px; border:1px solid var(--line); background:#0f1530; color:white; }
-    button { padding:10px 15px; border-radius:10px; border:none; cursor:pointer; }
-    .primary { background:#6ee7c8; color:black; }
-    .card { background:#121934; padding:15px; border-radius:15px; margin-bottom:15px; }
-    .output { white-space:pre-wrap; }
-  </style>
+.container { max-width: 1100px; margin: auto; }
+
+.card {
+  background: #121934;
+  padding: 20px;
+  border-radius: 15px;
+  margin-top: 20px;
+}
+
+input, select, textarea {
+  width: 100%;
+  padding: 12px;
+  margin-top: 10px;
+  border-radius: 10px;
+  border: 1px solid #27315d;
+  background: #0f1530;
+  color: white;
+}
+
+button {
+  padding: 12px;
+  border-radius: 10px;
+  border: none;
+  cursor: pointer;
+  font-weight: bold;
+  margin-top: 10px;
+}
+
+.primary { background: #6ee7c8; color: black; }
+.secondary { background: #86a8ff; color: white; }
+
+.output {
+  white-space: pre-wrap;
+  background: #0f1530;
+  padding: 15px;
+  border-radius: 10px;
+  min-height: 200px;
+}
+
+.row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.status { margin-top: 10px; }
+</style>
 </head>
+
 <body>
-<div class="wrap">
+<div class="container">
 
 <h1>🧠 Transcript Brain</h1>
-<p>Convierte transcripciones en resúmenes claros, visuales y accionables.</p>
 
 <div class="card">
-  <h3>🔑 Configuración</h3>
-  <input id="apiKey" placeholder="API Key" type="password" />
-  <input id="model" value="gpt-4.1-mini" />
+<h3>🔑 Configuración</h3>
+
+<input id="apiKey" placeholder="API Key">
+
+<div class="row">
+<select id="language">
+<option value="es">Español</option>
+<option value="en">English</option>
+</select>
+
+<select id="tone">
+<option value="direct">Directo</option>
+<option value="formal">Formal</option>
+<option value="friendly">Friendly</option>
+</select>
+</div>
+
+<select id="template">
+<option value="update">Update visual</option>
+<option value="jira">Jira</option>
+<option value="email">Email</option>
+<option value="executive">Executive</option>
+<option value="one">One-liner</option>
+</select>
+
 </div>
 
 <div class="card">
-  <h3>📥 Input</h3>
-  <textarea id="inputText" placeholder="Pega tu transcripción..."></textarea>
-  <br><br>
-  <button class="primary" onclick="generate()">🚀 Generar resumen</button>
+<h3>📥 Input</h3>
+<textarea id="inputText"></textarea>
+
+<button class="primary" onclick="generate()">🚀 Generar resumen</button>
+<button class="secondary" onclick="loadExample()">✨ Ejemplo</button>
+<button onclick="clearAll()">🗑️ Limpiar</button>
+
+<div id="status" class="status"></div>
 </div>
 
 <div class="card">
-  <h3>📤 Output</h3>
-  <div id="output" class="output"></div>
+<h3>📤 Output</h3>
+<div id="output" class="output"></div>
+
+<button class="secondary" onclick="copy()">📋 Copiar</button>
+<button onclick="saveHistory()">💾 Guardar</button>
+</div>
+
+<div class="card">
+<h3>🗂️ Historial</h3>
+<div id="history"></div>
+<button onclick="clearHistory()">🧹 Borrar historial</button>
 </div>
 
 </div>
 
 <script>
-const PROMPT = `Actúa como un analista ejecutivo.
-Convierte la información en un resumen corto, claro y visual.
+const example = `Se está construyendo un modelo antifraude. Aún no está listo. Rolo hablará con Alejandra para montarlo en Jira.`
 
-Reglas:
-- Usa emojis en títulos y bullets
-- Máximo 6 bullets
-- Frases cortas
-- Fácil de escanear
+function buildPrompt(lang, template, tone) {
 
-Formato:
-📢 Título
+const base = lang === "en"
+? "Act as executive analyst. Create short visual summary using emojis."
+: "Actúa como analista ejecutivo. Crea resumen corto con emojis.";
 
-🟡 Estado
+const tones = {
+direct: lang==="en"?"Tone: direct":"Tono: directo",
+formal: lang==="en"?"Tone: formal":"Tono: formal",
+friendly: lang==="en"?"Tone: friendly":"Tono: friendly"
+};
+
+const templates = {
+update: `📢 Title
+
+🟡 Status
 - ...
 
-⚙️ Qué está pasando
+⚙️ ${lang==="en"?"What is happening":"Qué está pasando"}
 - ...
 
-⚠️ Impacto
+⚠️ Impact
 - ...
 
-🧠 Próximo paso
+🧠 ${lang==="en"?"Next step":"Próximo paso"}
 - ...
 
 ⏳ Timeline
-- ...
-`;
+- ...`,
+
+jira: lang==="en"?"Create Jira comment with emojis":"Comentario Jira con emojis",
+
+email: lang==="en"?"Write short professional email":"Correo profesional corto",
+
+executive: lang==="en"?"Executive summary bullets":"Resumen ejecutivo bullets",
+
+one: lang==="en"?"One executive sentence":"Una sola línea ejecutiva"
+};
+
+return `${base}\n${tones[tone]}\n${templates[template]}`;
+}
 
 async function generate() {
-  const apiKey = document.getElementById("apiKey").value;
-  const input = document.getElementById("inputText").value;
+const apiKey = document.getElementById("apiKey").value;
+const text = document.getElementById("inputText").value;
+const lang = document.getElementById("language").value;
+const template = document.getElementById("template").value;
+const tone = document.getElementById("tone").value;
 
-  const res = await fetch("https://api.openai.com/v1/chat/completions", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      "Authorization": "Bearer " + apiKey
-    },
-    body: JSON.stringify({
-      model: "gpt-4.1-mini",
-      messages: [
-        { role: "system", content: PROMPT },
-        { role: "user", content: input }
-      ]
-    })
-  });
-
-  const data = await res.json();
-  document.getElementById("output").innerText = data.choices[0].message.content;
+if(!apiKey || !text){
+setStatus("⚠️ Falta info");
+return;
 }
+
+setStatus("⏳ Generando...");
+
+try{
+const res = await fetch("https://api.openai.com/v1/chat/completions",{
+method:"POST",
+headers:{
+"Content-Type":"application/json",
+"Authorization":"Bearer "+apiKey
+},
+body:JSON.stringify({
+model:"gpt-4.1-mini",
+messages:[
+{role:"system",content:buildPrompt(lang,template,tone)},
+{role:"user",content:text}
+]
+})
+});
+
+const data = await res.json();
+
+if(!res.ok) throw new Error(data.error.message);
+
+document.getElementById("output").innerText =
+data.choices[0].message.content;
+
+setStatus("✅ Listo");
+
+}catch(e){
+setStatus("❌ "+e.message);
+}
+}
+
+function setStatus(msg){
+document.getElementById("status").innerText = msg;
+}
+
+function loadExample(){
+document.getElementById("inputText").value = example;
+}
+
+function clearAll(){
+document.getElementById("inputText").value="";
+document.getElementById("output").innerText="";
+}
+
+function copy(){
+navigator.clipboard.writeText(
+document.getElementById("output").innerText
+);
+setStatus("📋 Copiado");
+}
+
+function saveHistory(){
+const out = document.getElementById("output").innerText;
+if(!out) return;
+
+let history = JSON.parse(localStorage.getItem("h")||"[]");
+history.unshift(out);
+localStorage.setItem("h",JSON.stringify(history));
+renderHistory();
+}
+
+function renderHistory(){
+const history = JSON.parse(localStorage.getItem("h")||"[]");
+const div = document.getElementById("history");
+div.innerHTML="";
+
+history.forEach(h=>{
+const el = document.createElement("div");
+el.innerText = h.substring(0,120)+"...";
+el.onclick=()=>document.getElementById("output").innerText=h;
+div.appendChild(el);
+});
+}
+
+function clearHistory(){
+localStorage.removeItem("h");
+renderHistory();
+}
+
+renderHistory();
 </script>
 
 </body>
