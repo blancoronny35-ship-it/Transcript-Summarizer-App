@@ -1,953 +1,279 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Transcript Brain — Local Mode</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bytes Brain</title>
 
-  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=Manrope:wght@400;500;600;700&family=JetBrains+Mono:wght@300;400;500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;700;800&family=Manrope:wght@400;600&family=JetBrains+Mono&display=swap" rel="stylesheet">
 
-  <style>
-    :root{
-      --bg:#F5F9FF;
-      --sf:#FFFFFF;
-      --s2:#EAF6FF;
-      --s3:#E0F0FF;
-      --bd:#D9E6FF;
-      --bd2:#C7DDFF;
-      --tx:#0B1B2B;
-      --t2:#4C5A6A;
-      --t3:#7A90A4;
-      --header-bg:#FFFFFF;
-      --blue:#207AFF;
-      --cyan:#00C0FF;
-      --danger:#EF4444;
-      --success:#2eac6c;
-      --font:'Sora',sans-serif;
-      --body-font:'Manrope',sans-serif;
-      --mono:'JetBrains Mono',monospace;
-    }
+<style>
+:root{
+  --bg:#F5F9FF;
+  --sf:#FFFFFF;
+  --s2:#EAF6FF;
+  --bd:#D9E6FF;
+  --tx:#0B1B2B;
+  --t2:#4C5A6A;
+  --blue:#207AFF;
+  --cyan:#00C0FF;
+}
 
-    body.dark-mode{
-      --bg:#0B1B2B;
-      --sf:#0f2236;
-      --s2:#122840;
-      --s3:#173050;
-      --bd:#1E3A55;
-      --bd2:#254a6a;
-      --tx:#EAF6FF;
-      --t2:#7AADCC;
-      --t3:#4C7A99;
-      --header-bg:#0d1e2e;
-    }
+body{
+  margin:0;
+  font-family:'Manrope';
+  background:var(--bg);
+  color:var(--tx);
+}
 
-    *{box-sizing:border-box;margin:0;padding:0}
-    body{
-      background:var(--bg);
-      color:var(--tx);
-      font-family:var(--body-font);
-      min-height:100vh;
-    }
+header{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:15px 20px;
+  background:white;
+  border-bottom:1px solid var(--bd);
+}
 
-    body::before{
-      content:'';
-      position:fixed;
-      inset:0;
-      pointer-events:none;
-      z-index:0;
-      background-image:
-        linear-gradient(rgba(32,122,255,.04) 1px,transparent 1px),
-        linear-gradient(90deg,rgba(32,122,255,.04) 1px,transparent 1px);
-      background-size:42px 42px;
-    }
+.logo{
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
 
-    header{
-      position:sticky;
-      top:0;
-      z-index:20;
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:16px;
-      padding:0 22px;
-      min-height:64px;
-      background:var(--header-bg);
-      border-bottom:1px solid var(--bd2);
-      box-shadow:0 1px 8px rgba(32,122,255,.06);
-    }
+.logo-box{
+  width:34px;
+  height:34px;
+  border-radius:8px;
+  background:linear-gradient(135deg,var(--blue),var(--cyan));
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  color:white;
+  font-weight:800;
+}
 
-    header::after{
-      content:'';
-      position:absolute;
-      bottom:-2px;
-      left:0;
-      right:0;
-      height:2px;
-      background:linear-gradient(90deg,var(--blue),var(--cyan) 55%,transparent);
-    }
+.container{
+  max-width:1100px;
+  margin:auto;
+  padding:20px;
+}
 
-    .logo-wrap{
-      display:flex;
-      align-items:center;
-      gap:10px;
-      min-width:0;
-    }
+.card{
+  background:var(--sf);
+  border:1px solid var(--bd);
+  border-radius:12px;
+  padding:20px;
+  margin-top:20px;
+}
 
-    .logo-box{
-      width:34px;
-      height:34px;
-      border-radius:8px;
-      background:linear-gradient(135deg,var(--blue),var(--cyan));
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      color:#fff;
-      font-family:var(--font);
-      font-weight:800;
-      box-shadow:0 6px 18px rgba(32,122,255,.18);
-      flex-shrink:0;
-    }
+input,select,textarea{
+  width:100%;
+  padding:10px;
+  border-radius:8px;
+  border:1px solid var(--bd);
+  background:var(--s2);
+  margin-top:8px;
+}
 
-    .logo-sep{
-      width:1px;
-      height:20px;
-      background:var(--bd2);
-      flex-shrink:0;
-    }
+textarea{
+  min-height:250px;
+}
 
-    .logo-copy{
-      display:flex;
-      flex-direction:column;
-      min-width:0;
-    }
+button{
+  padding:10px 14px;
+  border-radius:8px;
+  border:none;
+  cursor:pointer;
+  font-weight:bold;
+}
 
-    .logo-title{
-      font-family:var(--font);
-      font-size:14px;
-      font-weight:800;
-      letter-spacing:.02em;
-      color:var(--tx);
-      white-space:nowrap;
-    }
+.primary{background:var(--blue);color:white;}
+.secondary{background:var(--cyan);color:black;}
+.ghost{background:white;border:1px solid var(--bd);}
 
-    .logo-tag{
-      font-family:var(--mono);
-      font-size:9px;
-      letter-spacing:.18em;
-      color:var(--t3);
-      text-transform:uppercase;
-      white-space:nowrap;
-    }
+.actions{
+  margin-top:10px;
+  display:flex;
+  gap:10px;
+}
 
-    .header-actions{
-      display:flex;
-      gap:8px;
-      flex-wrap:wrap;
-    }
+.output{
+  white-space:pre-wrap;
+  padding:12px;
+  border:1px solid var(--bd);
+  border-radius:8px;
+  background:var(--s2);
+  min-height:300px;
+}
 
-    .btn{
-      padding:10px 14px;
-      border-radius:8px;
-      font-family:var(--font);
-      font-size:11px;
-      font-weight:700;
-      letter-spacing:.05em;
-      text-transform:uppercase;
-      cursor:pointer;
-      transition:.15s;
-      white-space:nowrap;
-      border:none;
-    }
-
-    .btn-blue{ background:var(--blue); color:#fff; }
-    .btn-blue:hover{ background:#1060DD; }
-
-    .btn-cyan{
-      background:rgba(0,192,255,.1);
-      color:var(--cyan);
-      border:1px solid rgba(0,192,255,.25);
-    }
-
-    .btn-ghost{
-      background:var(--sf);
-      color:var(--t2);
-      border:1px solid var(--bd2);
-    }
-
-    .btn-ghost:hover{
-      border-color:var(--blue);
-      color:var(--blue);
-    }
-
-    .page{
-      position:relative;
-      z-index:1;
-      max-width:1280px;
-      margin:0 auto;
-      padding:24px;
-    }
-
-    .hero{
-      display:flex;
-      align-items:flex-start;
-      justify-content:space-between;
-      gap:16px;
-      flex-wrap:wrap;
-      margin-bottom:20px;
-    }
-
-    .hero h1{
-      font-family:var(--font);
-      font-size:clamp(1.7rem,2.5vw,2.5rem);
-      font-weight:800;
-      letter-spacing:-.03em;
-      color:var(--tx);
-      margin-bottom:8px;
-    }
-
-    .hero p{
-      color:var(--t2);
-      max-width:760px;
-      line-height:1.6;
-    }
-
-    .hero-stats{
-      display:flex;
-      gap:8px;
-      flex-wrap:wrap;
-    }
-
-    .hstat{
-      display:flex;
-      align-items:center;
-      gap:6px;
-      padding:8px 12px;
-      border-radius:8px;
-      background:var(--s2);
-      border:1px solid var(--bd);
-      font-size:10px;
-      font-family:var(--mono);
-      color:var(--t2);
-      white-space:nowrap;
-    }
-
-    .hstat b{
-      font-size:13px;
-      color:var(--tx);
-      font-weight:700;
-    }
-
-    .hpip{
-      width:7px;
-      height:7px;
-      border-radius:50%;
-      background:var(--blue);
-      flex-shrink:0;
-    }
-
-    .grid{
-      display:grid;
-      grid-template-columns:1.02fr .98fr;
-      gap:20px;
-    }
-
-    @media (max-width:980px){
-      .grid{grid-template-columns:1fr}
-    }
-
-    .card{
-      background:var(--sf);
-      border:1px solid var(--bd);
-      border-radius:14px;
-      padding:18px;
-      box-shadow:0 1px 4px rgba(32,122,255,.06);
-      margin-bottom:18px;
-    }
-
-    .card h2,.card h3{
-      font-family:var(--font);
-      color:var(--tx);
-      margin-bottom:6px;
-    }
-
-    .sub{
-      color:var(--t2);
-      font-size:13px;
-      margin-bottom:14px;
-      line-height:1.5;
-    }
-
-    .row{
-      display:grid;
-      grid-template-columns:1fr 1fr;
-      gap:10px;
-    }
-
-    @media (max-width:700px){
-      .row{grid-template-columns:1fr}
-    }
-
-    label{
-      display:block;
-      margin-bottom:6px;
-      font-size:10px;
-      font-weight:700;
-      letter-spacing:.1em;
-      text-transform:uppercase;
-      color:var(--t2);
-      font-family:var(--mono);
-    }
-
-    input,select,textarea{
-      width:100%;
-      padding:10px 12px;
-      background:var(--s2);
-      border:1px solid var(--bd2);
-      border-radius:8px;
-      font-family:var(--body-font);
-      font-size:13px;
-      color:var(--tx);
-      outline:none;
-      transition:border-color .15s, box-shadow .15s;
-    }
-
-    input:focus,select:focus,textarea:focus{
-      border-color:var(--blue);
-      box-shadow:0 0 0 2px rgba(32,122,255,.1);
-    }
-
-    textarea{
-      min-height:280px;
-      resize:vertical;
-      line-height:1.65;
-    }
-
-    .actions{
-      display:flex;
-      gap:8px;
-      flex-wrap:wrap;
-      margin-top:8px;
-    }
-
-    .status{
-      margin-top:14px;
-      padding:12px;
-      border-radius:10px;
-      border:1px solid var(--bd2);
-      background:var(--s2);
-      color:var(--t2);
-      font-size:13px;
-      line-height:1.5;
-      white-space:pre-wrap;
-    }
-
-    .status.error{
-      color:var(--danger);
-      border-color:rgba(239,68,68,.25);
-      background:rgba(239,68,68,.07);
-    }
-
-    .status.success{
-      color:var(--success);
-      border-color:rgba(46,172,108,.25);
-      background:rgba(46,172,108,.07);
-    }
-
-    .output{
-      white-space:pre-wrap;
-      min-height:340px;
-      padding:14px;
-      background:var(--s2);
-      border:1px solid var(--bd2);
-      border-radius:10px;
-      line-height:1.75;
-      color:var(--tx);
-    }
-
-    .small{
-      font-size:12px;
-      color:var(--t3);
-      line-height:1.5;
-    }
-
-    .history-item{
-      background:var(--s2);
-      border:1px solid var(--bd2);
-      border-radius:10px;
-      padding:10px;
-      margin-top:10px;
-      cursor:pointer;
-      transition:.15s;
-      color:var(--tx);
-      font-size:13px;
-      line-height:1.5;
-    }
-
-    .history-item:hover{
-      border-color:var(--blue);
-      transform:translateY(-1px);
-    }
-
-    .footer-strip{
-      position:fixed;
-      bottom:0;
-      left:0;
-      right:0;
-      height:2px;
-      background:linear-gradient(90deg,var(--blue),var(--cyan));
-      z-index:15;
-    }
-  </style>
+.status{
+  margin-top:10px;
+  font-size:14px;
+  color:var(--t2);
+}
+</style>
 </head>
+
 <body>
-  <header>
-    <div class="logo-wrap">
-      <div class="logo-box">TB</div>
-      <div class="logo-sep"></div>
-      <div class="logo-copy">
-        <div class="logo-title">Transcript Brain</div>
-        <div class="logo-tag">Local Summary Engine</div>
-      </div>
+
+<header>
+  <div class="logo">
+    <div class="logo-box">BB</div>
+    <div>
+      <strong>BYTES BRAIN</strong><br>
+      <small>Local Summary Engine</small>
     </div>
+  </div>
 
-    <div class="header-actions">
-      <button class="btn btn-ghost" id="themeToggleBtn">🌙 Modo oscuro</button>
-      <button class="btn btn-cyan" id="exampleBtnTop">✨ Ejemplo</button>
-    </div>
-  </header>
+  <button onclick="toggleTheme()" class="ghost">🌙 Theme</button>
+</header>
 
-  <main class="page">
-    <section class="hero">
-      <div>
-        <h1>🧠 Smart Summaries</h1>
-        <p>Modo local sin API. Convierte transcripciones en resúmenes visuales y accionables usando reglas simples dentro del navegador.</p>
-      </div>
+<div class="container">
 
-      <div class="hero-stats">
-        <div class="hstat"><span class="hpip"></span><span>Modo <b>Local</b></span></div>
-        <div class="hstat"><span class="hpip"></span><span>Templates <b>5</b></span></div>
-        <div class="hstat"><span class="hpip"></span><span>Idiomas <b>ES / EN</b></span></div>
-      </div>
-    </section>
+<div class="card">
+<h3>⚙️ Configuración</h3>
 
-    <div class="grid">
-      <section>
-        <div class="card">
-          <h2>⚙️ Configuración</h2>
-          <div class="sub">No usa API key. Todo corre en tu navegador.</div>
+<select id="language">
+<option value="es">Español</option>
+<option value="en">English</option>
+</select>
 
-          <div class="row">
-            <div>
-              <label for="language">Idioma</label>
-              <select id="language">
-                <option value="es">Español</option>
-                <option value="en">English</option>
-              </select>
-            </div>
-            <div>
-              <label for="template">Template</label>
-              <select id="template">
-                <option value="update">Update visual</option>
-                <option value="executive">Resumen ejecutivo</option>
-                <option value="jira">Comentario Jira</option>
-                <option value="email">Correo / Email</option>
-                <option value="one">One-liner</option>
-              </select>
-            </div>
-          </div>
+<select id="template">
+<option value="update">Update</option>
+<option value="jira">Jira</option>
+<option value="email">Email</option>
+<option value="one">One-liner</option>
+</select>
 
-          <div class="row">
-            <div>
-              <label for="tone">Tono</label>
-              <select id="tone">
-                <option value="direct">Directo</option>
-                <option value="formal">Formal</option>
-                <option value="friendly">Friendly</option>
-              </select>
-            </div>
-            <div>
-              <label for="lengthMode">Longitud</label>
-              <select id="lengthMode">
-                <option value="short">Corta</option>
-                <option value="medium">Media</option>
-              </select>
-            </div>
-          </div>
-        </div>
+</div>
 
-        <div class="card">
-          <h2>📥 Input</h2>
-          <div class="sub">Pegá la transcripción, minuta o update técnico.</div>
+<div class="card">
+<h3>📥 Input</h3>
+<textarea id="inputText"></textarea>
 
-          <label for="inputText">Transcripción</label>
-          <textarea id="inputText" placeholder="Pegá aquí tu transcripción..."></textarea>
+<div class="actions">
+<button class="primary" onclick="generate()">🚀 Generar</button>
+<button class="ghost" onclick="clearAll()">🗑️ Limpiar</button>
+</div>
 
-          <div class="actions">
-            <button class="btn btn-blue" id="generateBtn">🚀 Generar resumen</button>
-            <button class="btn btn-cyan" id="exampleBtn">✨ Cargar ejemplo</button>
-            <button class="btn btn-ghost" id="clearBtn">🗑️ Limpiar</button>
-          </div>
+<div id="status" class="status"></div>
+</div>
 
-          <div id="status" class="status">Listo para generar resúmenes.</div>
-        </div>
-      </section>
+<div class="card">
+<h3>📤 Output</h3>
+<div id="output" class="output"></div>
 
-      <section>
-        <div class="card">
-          <h2>📤 Output</h2>
-          <div class="sub">Resumen generado localmente.</div>
+<div class="actions">
+<button class="secondary" onclick="copy()">📋 Copiar</button>
+<button class="ghost" onclick="save()">💾 Guardar</button>
+</div>
+</div>
 
-          <div id="output" class="output">Aquí aparecerá el resumen.</div>
+<div class="card">
+<h3>🗂️ Historial</h3>
+<div id="history"></div>
+<button class="ghost" onclick="clearHistory()">🧹 Limpiar</button>
+</div>
 
-          <div class="actions">
-            <button class="btn btn-cyan" id="copyBtn">📋 Copiar</button>
-            <button class="btn btn-ghost" id="saveHistoryBtn">🧾 Guardar en historial</button>
-          </div>
-        </div>
+</div>
 
-        <div class="card">
-          <h3>🗂️ Historial</h3>
-          <div class="sub">Se guarda en tu navegador.</div>
-          <div id="history"></div>
-          <div class="actions">
-            <button class="btn btn-ghost" id="clearHistoryBtn">🧹 Borrar historial</button>
-          </div>
-        </div>
+<script>
+function generate(){
+let text=document.getElementById("inputText").value;
+let lang=document.getElementById("language").value;
 
-        <div class="card">
-          <h3>ℹ️ Nota</h3>
-          <div class="small">
-            Este modo no usa inteligencia generativa. Resume usando reglas simples, por lo que funciona mejor con transcripciones claras y con contexto explícito.
-          </div>
-        </div>
-      </section>
-    </div>
-  </main>
+if(!text){
+status("⚠️ Falta texto");
+return;
+}
 
-  <div class="footer-strip"></div>
+let output=
+`📢 Update
 
-  <script>
-    const exampleText = `0:02-2:36: Mae, no, todavía no. En la reunión de ayer el update fue que apenas se está construyendo el modelo. Están cargando data para identificar si un retiro puede ser fraudulento o no. Analizarán variables como apuestas, frecuencia de depósitos y comportamiento antes del retiro. Si el riesgo supera un threshold, el retiro se pondrá on hold hasta validación manual. Todavía falta probar el modelo, validar falsos positivos y luego exponerlo como servicio para que nosotros lo consumamos. Aún no hay planificación formal. Rolo hablará con Alejandra la próxima semana para montarlo en Jira y darle trazabilidad. El timeline estimado es de una a dos semanas para que llegue a nuestro lado.`;
+🟡 Estado
+- En progreso
 
-    const $ = (id) => document.getElementById(id);
+⚙️ Qué está pasando
+- ${text.substring(0,120)}...
 
-    function setStatus(message, type = "info") {
-      const el = $("status");
-      el.className = "status";
-      if (type === "error") el.classList.add("error");
-      if (type === "success") el.classList.add("success");
-      el.textContent = message;
-    }
+⚠️ Impacto
+- Aún sin impacto definido
 
-    function normalizeText(text) {
-      return text
-        .replace(/\s+/g, " ")
-        .replace(/\s([,.!?;:])/g, "$1")
-        .trim();
-    }
+🧠 Próximo paso
+- Dar seguimiento
 
-    function splitSentences(text) {
-      return text
-        .replace(/\n+/g, " ")
-        .split(/(?<=[.!?])\s+|(?<=:)\s+/)
-        .map(s => s.trim())
-        .filter(Boolean);
-    }
+⏳ Timeline
+- Por definir`;
 
-    function unique(arr) {
-      return [...new Set(arr.filter(Boolean))];
-    }
+if(lang==="en"){
+output=
+`📢 Update
 
-    function detectNames(text) {
-      const matches = text.match(/\b[A-ZÁÉÍÓÚÑ][a-záéíóúñ]+(?:\s+[A-ZÁÉÍÓÚÑ][a-záéíóúñ]+)?\b/g) || [];
-      const blacklist = new Set([
-        "Mae", "En", "El", "La", "Los", "Las", "Si", "No", "Timeline", "Update", "Estado", "Impacto",
-        "What", "Status", "Impact", "Next", "Title", "English", "Español"
-      ]);
-      return unique(matches.filter(n => !blacklist.has(n))).slice(0, 4);
-    }
+🟡 Status
+- In progress
 
-    function findFirstSentence(sentences, keywords) {
-      const lowerKeywords = keywords.map(k => k.toLowerCase());
-      return sentences.find(s => {
-        const l = s.toLowerCase();
-        return lowerKeywords.some(k => l.includes(k));
-      }) || "";
-    }
+⚙️ What is happening
+- ${text.substring(0,120)}...
 
-    function findAllMatches(sentences, keywords, max = 3) {
-      const lowerKeywords = keywords.map(k => k.toLowerCase());
-      return unique(
-        sentences.filter(s => {
-          const l = s.toLowerCase();
-          return lowerKeywords.some(k => l.includes(k));
-        })
-      ).slice(0, max);
-    }
+⚠️ Impact
+- Not defined yet
 
-    function shortenSentence(sentence, maxLen = 140) {
-      if (!sentence) return "";
-      const clean = normalizeText(sentence);
-      if (clean.length <= maxLen) return clean;
-      return clean.slice(0, maxLen - 1).trim() + "…";
-    }
+🧠 Next step
+- Follow up
 
-    function summarizeLocal(text, lang = "es", tone = "direct", lengthMode = "short") {
-      const cleanText = normalizeText(text);
-      const sentences = splitSentences(cleanText);
-      const names = detectNames(cleanText);
+⏳ Timeline
+- TBD`;
+}
 
-      const stateSentence = findFirstSentence(sentences, [
-        "en desarrollo","todavía no","aún no","no está listo","se está construyendo","en construcción",
-        "pendiente","on hold","bloqueado","en progreso","working on","in progress","not ready","building","under development"
-      ]);
+document.getElementById("output").innerText=output;
+status("✅ Listo");
+}
 
-      const happeningMatches = findAllMatches(sentences, [
-        "se está","están","analizarán","cargando","modelo","servicio","riesgo","threshold","validación","manual",
-        "building","loading","service","risk","validation","manual"
-      ], lengthMode === "short" ? 2 : 3);
+function status(msg){
+document.getElementById("status").innerText=msg;
+}
 
-      const impactSentence = findFirstSentence(sentences, [
-        "impacto","afecta","dependemos","no disponible","no hay integración","on hold","validación manual",
-        "impact","affects","depends","not available","no integration","manual validation"
-      ]) || findFirstSentence(sentences, [
-        "si el riesgo supera","si supera","retiro se pondrá on hold","manualmente lo autorice",
-        "if risk exceeds","on hold","manual approval"
-      ]);
+function copy(){
+navigator.clipboard.writeText(document.getElementById("output").innerText);
+status("📋 Copiado");
+}
 
-      const nextStepSentence = findFirstSentence(sentences, [
-        "próxima semana","siguiente paso","hablará","hablara","montarlo en jira","jira","trazabilidad","se revisará","se revisara",
-        "next week","next step","will speak","jira","tracking","follow up"
-      ]);
+function clearAll(){
+document.getElementById("inputText").value="";
+document.getElementById("output").innerText="";
+}
 
-      const timelineSentence = findFirstSentence(sentences, [
-        "una o dos semanas","1 o 2 semanas","1-2 semanas","timeline","estimado","pronto","esta semana","la próxima semana",
-        "one or two weeks","1-2 weeks","estimated","next week","this week","soon"
-      ]);
+function save(){
+let h=JSON.parse(localStorage.getItem("h")||"[]");
+h.unshift(document.getElementById("output").innerText);
+localStorage.setItem("h",JSON.stringify(h));
+render();
+}
 
-      let status;
-      if (/bloquead|on hold|hold/i.test(cleanText)) {
-        status = lang === "en" ? "Blocked / on hold" : "Bloqueado / on hold";
-      } else if (/todavía no|aún no|no está listo|not ready/i.test(cleanText)) {
-        status = lang === "en" ? "In progress, not ready yet" : "En progreso, aún no listo";
-      } else if (/en desarrollo|se está construyendo|building|under development/i.test(cleanText)) {
-        status = lang === "en" ? "In development" : "En desarrollo";
-      } else {
-        status = lang === "en" ? "Under review" : "En revisión";
-      }
+function render(){
+let h=JSON.parse(localStorage.getItem("h")||"[]");
+let div=document.getElementById("history");
+div.innerHTML="";
+h.forEach(x=>{
+let el=document.createElement("div");
+el.innerText=x.substring(0,100)+"...";
+el.onclick=()=>document.getElementById("output").innerText=x;
+div.appendChild(el);
+});
+}
 
-      let title;
-      if (/fraud|fraude|retiro|withdrawal/i.test(cleanText)) {
-        title = lang === "en" ? "Update – Withdrawal Fraud Model" : "Update – Modelo antifraude en retiros";
-      } else if (/jira/i.test(cleanText)) {
-        title = lang === "en" ? "Update – Jira Tracking" : "Update – Seguimiento en Jira";
-      } else if (/servicio|service/i.test(cleanText)) {
-        title = lang === "en" ? "Update – Service Integration" : "Update – Integración de servicio";
-      } else {
-        title = lang === "en" ? "Update – Key Progress" : "Update – Avance clave";
-      }
+function clearHistory(){
+localStorage.removeItem("h");
+render();
+}
 
-      const impact = impactSentence
-        ? shortenSentence(impactSentence)
-        : (lang === "en"
-          ? "There is still no active implementation on our side."
-          : "Todavía no hay una implementación activa de nuestro lado.");
+function toggleTheme(){
+document.body.classList.toggle("dark-mode");
+}
 
-      let nextStep = nextStepSentence
-        ? shortenSentence(nextStepSentence)
-        : (lang === "en"
-          ? "Continue follow-up and keep tracking the next dependency."
-          : "Dar seguimiento y mantener trazabilidad del siguiente pendiente.");
+render();
+</script>
 
-      if (names.length && !/Rolo|Alejandra|Rony|Mickey|Shiu/i.test(nextStep)) {
-        if (lang === "en") {
-          nextStep += ` Key people mentioned: ${names.join(", ")}.`;
-        } else {
-          nextStep += ` Personas mencionadas: ${names.join(", ")}.`;
-        }
-      }
-
-      const timeline = timelineSentence
-        ? shortenSentence(timelineSentence, 100)
-        : (lang === "en" ? "Not clearly defined yet." : "Aún no definido claramente.");
-
-      const happening = happeningMatches.length
-        ? happeningMatches.map(s => shortenSentence(s, 130))
-        : [lang === "en" ? "The transcript provides limited explicit detail." : "La transcripción da detalle limitado de forma explícita."];
-
-      return { title, status, happening, impact, nextStep, timeline, names };
-    }
-
-    function formatOutput(summary, lang, template, tone) {
-      const direct = tone === "direct";
-      const formal = tone === "formal";
-
-      if (template === "one") {
-        if (lang === "en") {
-          return `📢 ${summary.title}: 🟡 ${summary.status}; 🧠 ${summary.nextStep.replace(/\.$/, "")}; ⏳ ${summary.timeline.replace(/\.$/, "")}.`;
-        }
-        return `📢 ${summary.title}: 🟡 ${summary.status}; 🧠 ${summary.nextStep.replace(/\.$/, "")}; ⏳ ${summary.timeline.replace(/\.$/, "")}.`;
-      }
-
-      if (template === "jira") {
-        if (lang === "en") {
-          return [
-            `📢 ${summary.title}`,
-            ``,
-            `🟡 Current status: ${summary.status}.`,
-            `⚙️ ${summary.happening[0] || "Work is still in progress."}`,
-            `⚠️ Impact: ${summary.impact}`,
-            `🧠 Next step: ${summary.nextStep}`,
-            `⏳ Timeline: ${summary.timeline}`
-          ].join("\n");
-        }
-        return [
-          `📢 ${summary.title}`,
-          ``,
-          `🟡 Estado actual: ${summary.status}.`,
-          `⚙️ ${summary.happening[0] || "El trabajo sigue en progreso."}`,
-          `⚠️ Impacto: ${summary.impact}`,
-          `🧠 Próximo paso: ${summary.nextStep}`,
-          `⏳ Timeline: ${summary.timeline}`
-        ].join("\n");
-      }
-
-      if (template === "email") {
-        if (lang === "en") {
-          return [
-            `Subject: ${summary.title}`,
-            ``,
-            `Hello team,`,
-            ``,
-            `📢 Please find below the current update:`,
-            `🟡 Status: ${summary.status}.`,
-            `⚙️ What is happening: ${summary.happening.join(" ")}`,
-            `⚠️ Impact: ${summary.impact}`,
-            `🧠 Next step: ${summary.nextStep}`,
-            `⏳ Timeline: ${summary.timeline}`,
-            ``,
-            formal ? `Best regards,` : `Thanks,`
-          ].join("\n");
-        }
-        return [
-          `Asunto: ${summary.title}`,
-          ``,
-          `Hola equipo,`,
-          ``,
-          `📢 Comparto el update actual:`,
-          `🟡 Estado: ${summary.status}.`,
-          `⚙️ Qué está pasando: ${summary.happening.join(" ")}`,
-          `⚠️ Impacto: ${summary.impact}`,
-          `🧠 Próximo paso: ${summary.nextStep}`,
-          `⏳ Timeline: ${summary.timeline}`,
-          ``,
-          formal ? `Saludos,` : `Gracias,`
-        ].join("\n");
-      }
-
-      if (template === "executive") {
-        if (lang === "en") {
-          return [
-            `📢 ${summary.title}`,
-            ``,
-            `🟡 Status`,
-            `- ${summary.status}`,
-            ``,
-            `⚠️ Impact`,
-            `- ${summary.impact}`,
-            ``,
-            `🧠 Next step`,
-            `- ${summary.nextStep}`,
-            ``,
-            `⏳ Timeline`,
-            `- ${summary.timeline}`
-          ].join("\n");
-        }
-        return [
-          `📢 ${summary.title}`,
-          ``,
-          `🟡 Estado`,
-          `- ${summary.status}`,
-          ``,
-          `⚠️ Impacto`,
-          `- ${summary.impact}`,
-          ``,
-          `🧠 Próximo paso`,
-          `- ${summary.nextStep}`,
-          ``,
-          `⏳ Timeline`,
-          `- ${summary.timeline}`
-        ].join("\n");
-      }
-
-      if (lang === "en") {
-        return [
-          `📢 ${summary.title}`,
-          ``,
-          `🟡 Status`,
-          `- ${summary.status}`,
-          ``,
-          `⚙️ What is happening`,
-          ...summary.happening.map(x => `- ${x}`),
-          ``,
-          `⚠️ Impact`,
-          `- ${summary.impact}`,
-          ``,
-          `🧠 Next step`,
-          `- ${summary.nextStep}`,
-          ``,
-          `⏳ Timeline`,
-          `- ${summary.timeline}`
-        ].join("\n");
-      }
-
-      return [
-        `📢 ${summary.title}`,
-        ``,
-        `🟡 Estado`,
-        `- ${summary.status}`,
-        ``,
-        `⚙️ Qué está pasando`,
-        ...summary.happening.map(x => `- ${x}`),
-        ``,
-        `⚠️ Impacto`,
-        `- ${summary.impact}`,
-        ``,
-        `🧠 Próximo paso`,
-        `- ${summary.nextStep}`,
-        ``,
-        `⏳ Timeline`,
-        `- ${summary.timeline}`
-      ].join("\n");
-    }
-
-    function generateSummary() {
-      const input = $("inputText").value.trim();
-      const language = $("language").value;
-      const template = $("template").value;
-      const tone = $("tone").value;
-      const lengthMode = $("lengthMode").value;
-      const output = $("output");
-
-      if (!input) {
-        setStatus(language === "en"
-          ? "⚠️ Paste a transcript before generating the summary."
-          : "⚠️ Pegá una transcripción antes de generar el resumen.", "error");
-        return;
-      }
-
-      try {
-        setStatus(language === "en" ? "⏳ Generating local summary..." : "⏳ Generando resumen local...");
-        const summary = summarizeLocal(input, language, tone, lengthMode);
-        const formatted = formatOutput(summary, language, template, tone);
-        output.textContent = formatted;
-        setStatus(language === "en" ? "✅ Local summary generated." : "✅ Resumen local generado.", "success");
-      } catch (error) {
-        output.textContent = language === "en"
-          ? "An error occurred while generating the summary."
-          : "Ocurrió un error al generar el resumen.";
-        setStatus(`❌ ${error.message}`, "error");
-      }
-    }
-
-    function copyOutput() {
-      const text = $("output").textContent.trim();
-      if (!text || text === "Aquí aparecerá el resumen.") {
-        setStatus("⚠️ No hay contenido para copiar.", "error");
-        return;
-      }
-      navigator.clipboard.writeText(text);
-      setStatus("📋 Resumen copiado.", "success");
-    }
-
-    function saveHistory() {
-      const output = $("output").textContent.trim();
-      const input = $("inputText").value.trim();
-      if (!output || output === "Aquí aparecerá el resumen.") {
-        setStatus("⚠️ No hay resumen para guardar.", "error");
-        return;
-      }
-
-      const history = JSON.parse(localStorage.getItem("tb_history_local") || "[]");
-      history.unshift({
-        id: Date.now(),
-        createdAt: new Date().toLocaleString(),
-        input,
-        output
-      });
-      localStorage.setItem("tb_history_local", JSON.stringify(history.slice(0, 15)));
-      renderHistory();
-      setStatus("🧾 Resumen guardado en historial.", "success");
-    }
-
-    function renderHistory() {
-      const history = JSON.parse(localStorage.getItem("tb_history_local") || "[]");
-      const container = $("history");
-      container.innerHTML = "";
-
-      if (!history.length) {
-        container.innerHTML = "<div class='small'>No hay historial todavía.</div>";
-        return;
-      }
-
-      history.forEach((item) => {
-        const div = document.createElement("div");
-        div.className = "history-item";
-        div.textContent = item.output.slice(0, 140) + (item.output.length > 140 ? "..." : "");
-        div.title = item.createdAt;
-        div.onclick = () => {
-          $("inputText").value = item.input;
-          $("output").textContent = item.output;
-          setStatus("📂 Historial cargado.", "success");
-        };
-        container.appendChild(div);
-      });
-    }
-
-    function clearHistory() {
-      localStorage.removeItem("tb_history_local");
-      renderHistory();
-      setStatus("🧹 Historial borrado.", "success");
-    }
-
-    function loadExample() {
-      $("inputText").value = exampleText;
-      setStatus("✨ Ejemplo cargado.", "success");
-    }
-
-    function clearAll() {
-      $("inputText").value = "";
-      $("output").textContent = "Aquí aparecerá el resumen.";
-      setStatus("🧹 Contenido limpiado.", "success");
-    }
-
-    function toggleTheme() {
-      document.body.classList.toggle("dark-mode");
-      const btn = $("themeToggleBtn");
-      const dark = document.body.classList.contains("dark-mode");
-      btn.textContent = dark ? "☀️ Modo claro" : "🌙 Modo oscuro";
-      localStorage.setItem("tb_theme_local", dark ? "dark" : "light");
-    }
-
-    function loadTheme() {
-      const saved = localStorage.getItem("tb_theme_local");
-      if (saved === "dark") {
-        document.body.classList.add("dark-mode");
-        $("themeToggleBtn").textContent = "☀️ Modo claro";
-      }
-    }
-
-    $("generateBtn").addEventListener("click", generateSummary);
-    $("exampleBtn").addEventListener("click", loadExample);
-    $("exampleBtnTop").addEventListener("click", loadExample);
-    $("clearBtn").addEventListener("click", clearAll);
-    $("copyBtn").addEventListener("click", copyOutput);
-    $("saveHistoryBtn").addEventListener("click", saveHistory);
-    $("clearHistoryBtn").addEventListener("click", clearHistory);
-    $("themeToggleBtn").addEventListener("click", toggleTheme);
-
-    loadTheme();
-    renderHistory();
-  </script>
 </body>
 </html>
