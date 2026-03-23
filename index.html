@@ -1,267 +1,803 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>🧠 Transcript Brain</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Transcript Brain — MIDAS Style</title>
 
-<style>
-body {
-  font-family: Arial;
-  background: #0b1020;
-  color: white;
-  margin: 0;
-  padding: 20px;
-}
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=Manrope:wght@400;500;600;700&family=JetBrains+Mono:wght@300;400;500;700&display=swap" rel="stylesheet">
 
-.container { max-width: 1100px; margin: auto; }
+  <style>
+    :root{
+      --bg:#F5F9FF;
+      --sf:#FFFFFF;
+      --s2:#EAF6FF;
+      --s3:#E0F0FF;
+      --bd:#D9E6FF;
+      --bd2:#C7DDFF;
+      --bd3:#ADDCFF;
+      --tx:#0B1B2B;
+      --t2:#4C5A6A;
+      --t3:#7A90A4;
+      --header-bg:#FFFFFF;
+      --orange:#207AFF;
+      --gold:#00C0FF;
+      --cream:#0B1B2B;
+      --danger:#EF4444;
+      --success:#2eac6c;
+      --font:'Sora',sans-serif;
+      --body-font:'Manrope',sans-serif;
+      --mono:'JetBrains Mono',monospace;
+    }
 
-.card {
-  background: #121934;
-  padding: 20px;
-  border-radius: 15px;
-  margin-top: 20px;
-}
+    body.dark-mode{
+      --bg:#0B1B2B;
+      --sf:#0f2236;
+      --s2:#122840;
+      --s3:#173050;
+      --bd:#1E3A55;
+      --bd2:#254a6a;
+      --bd3:#2e5a7f;
+      --tx:#EAF6FF;
+      --t2:#7AADCC;
+      --t3:#4C7A99;
+      --cream:#EAF6FF;
+      --header-bg:#0d1e2e;
+    }
 
-input, select, textarea {
-  width: 100%;
-  padding: 12px;
-  margin-top: 10px;
-  border-radius: 10px;
-  border: 1px solid #27315d;
-  background: #0f1530;
-  color: white;
-}
+    *{box-sizing:border-box;margin:0;padding:0}
+    html,body{min-height:100%}
+    body{
+      background:var(--bg);
+      color:var(--tx);
+      font-family:var(--body-font);
+      display:flex;
+      flex-direction:column;
+    }
+    body::before{
+      content:'';
+      position:fixed;
+      inset:0;
+      pointer-events:none;
+      z-index:0;
+      background-image:
+        linear-gradient(rgba(32,122,255,.04) 1px,transparent 1px),
+        linear-gradient(90deg,rgba(32,122,255,.04) 1px,transparent 1px);
+      background-size:42px 42px;
+    }
 
-button {
-  padding: 12px;
-  border-radius: 10px;
-  border: none;
-  cursor: pointer;
-  font-weight: bold;
-  margin-top: 10px;
-}
+    header{
+      position:sticky;
+      top:0;
+      z-index:20;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:16px;
+      padding:0 22px;
+      min-height:64px;
+      background:var(--header-bg);
+      border-bottom:1px solid var(--bd2);
+      box-shadow:0 1px 8px rgba(32,122,255,.06);
+    }
+    header::after{
+      content:'';
+      position:absolute;
+      bottom:-2px;
+      left:0;
+      right:0;
+      height:2px;
+      background:linear-gradient(90deg,var(--orange),var(--gold) 55%,transparent);
+    }
 
-.primary { background: #6ee7c8; color: black; }
-.secondary { background: #86a8ff; color: white; }
+    .logo-wrap{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      min-width:0;
+    }
+    .logo-box{
+      width:34px;
+      height:34px;
+      border-radius:8px;
+      background:linear-gradient(135deg,var(--orange),var(--gold));
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      color:#fff;
+      font-family:var(--font);
+      font-weight:800;
+      box-shadow:0 6px 18px rgba(32,122,255,.18);
+      flex-shrink:0;
+    }
+    .logo-sep{
+      width:1px;
+      height:20px;
+      background:var(--bd2);
+      flex-shrink:0;
+    }
+    .logo-copy{
+      display:flex;
+      flex-direction:column;
+      min-width:0;
+    }
+    .logo-title{
+      font-family:var(--font);
+      font-size:14px;
+      font-weight:800;
+      letter-spacing:.02em;
+      color:var(--tx);
+      white-space:nowrap;
+    }
+    .logo-tag{
+      font-family:var(--mono);
+      font-size:9px;
+      letter-spacing:.18em;
+      color:var(--t3);
+      text-transform:uppercase;
+      white-space:nowrap;
+    }
 
-.output {
-  white-space: pre-wrap;
-  background: #0f1530;
-  padding: 15px;
-  border-radius: 10px;
-  min-height: 200px;
-}
+    .header-actions{
+      display:flex;
+      align-items:center;
+      gap:8px;
+      flex-wrap:wrap;
+    }
 
-.row {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 10px;
-}
+    .btn{
+      padding:10px 14px;
+      border-radius:8px;
+      font-family:var(--font);
+      font-size:11px;
+      font-weight:700;
+      letter-spacing:.05em;
+      text-transform:uppercase;
+      cursor:pointer;
+      transition:.15s;
+      white-space:nowrap;
+      border:none;
+    }
+    .btn-or{
+      background:var(--orange);
+      color:#fff;
+    }
+    .btn-or:hover{background:#1060DD}
+    .btn-gh{
+      background:var(--sf);
+      color:var(--t2);
+      border:1px solid var(--bd2);
+    }
+    .btn-gh:hover{
+      border-color:var(--orange);
+      color:var(--orange);
+    }
+    .btn-cyan{
+      background:rgba(0,192,255,.1);
+      color:var(--gold);
+      border:1px solid rgba(0,192,255,.25);
+    }
 
-.status { margin-top: 10px; }
-</style>
+    .page{
+      position:relative;
+      z-index:1;
+      max-width:1280px;
+      width:100%;
+      margin:0 auto;
+      padding:24px;
+    }
+
+    .hero{
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:16px;
+      flex-wrap:wrap;
+      margin-bottom:20px;
+    }
+    .hero h1{
+      font-family:var(--font);
+      font-size:clamp(1.7rem,2.5vw,2.5rem);
+      font-weight:800;
+      letter-spacing:-.03em;
+      color:var(--tx);
+      margin-bottom:8px;
+    }
+    .hero p{
+      color:var(--t2);
+      max-width:760px;
+      line-height:1.6;
+    }
+
+    .hero-stats{
+      display:flex;
+      gap:8px;
+      flex-wrap:wrap;
+    }
+    .hstat{
+      display:flex;
+      align-items:center;
+      gap:6px;
+      padding:8px 12px;
+      border-radius:8px;
+      background:var(--s2);
+      border:1px solid var(--bd);
+      font-size:10px;
+      font-family:var(--mono);
+      color:var(--t2);
+      white-space:nowrap;
+    }
+    .hstat b{
+      font-size:13px;
+      color:var(--tx);
+      font-weight:700;
+    }
+    .hpip{
+      width:7px;
+      height:7px;
+      border-radius:50%;
+      background:var(--orange);
+      flex-shrink:0;
+    }
+
+    .grid{
+      display:grid;
+      grid-template-columns:1.05fr .95fr;
+      gap:20px;
+    }
+    @media (max-width:980px){
+      .grid{grid-template-columns:1fr}
+    }
+
+    .card{
+      background:var(--sf);
+      border:1px solid var(--bd);
+      border-radius:14px;
+      padding:18px;
+      box-shadow:0 1px 4px rgba(32,122,255,.06);
+      margin-bottom:18px;
+    }
+
+    .card h2,.card h3{
+      font-family:var(--font);
+      color:var(--tx);
+      margin-bottom:6px;
+    }
+    .sub{
+      color:var(--t2);
+      font-size:13px;
+      margin-bottom:14px;
+      line-height:1.5;
+    }
+
+    .row{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:10px;
+    }
+    @media (max-width:700px){
+      .row{grid-template-columns:1fr}
+    }
+
+    label{
+      display:block;
+      margin-bottom:6px;
+      font-size:10px;
+      font-weight:700;
+      letter-spacing:.1em;
+      text-transform:uppercase;
+      color:var(--t2);
+      font-family:var(--mono);
+    }
+
+    input,select,textarea{
+      width:100%;
+      padding:10px 12px;
+      background:var(--s2);
+      border:1px solid var(--bd2);
+      border-radius:8px;
+      font-family:var(--body-font);
+      font-size:13px;
+      color:var(--tx);
+      outline:none;
+      transition:border-color .15s, box-shadow .15s;
+    }
+    input:focus,select:focus,textarea:focus{
+      border-color:var(--orange);
+      box-shadow:0 0 0 2px rgba(32,122,255,.1);
+    }
+    textarea{
+      min-height:260px;
+      resize:vertical;
+      line-height:1.6;
+    }
+
+    .actions{
+      display:flex;
+      gap:8px;
+      flex-wrap:wrap;
+      margin-top:8px;
+    }
+
+    .status{
+      margin-top:14px;
+      padding:12px;
+      border-radius:10px;
+      border:1px solid var(--bd2);
+      background:var(--s2);
+      color:var(--t2);
+      font-size:13px;
+      line-height:1.5;
+      white-space:pre-wrap;
+    }
+    .status.error{
+      color:var(--danger);
+      border-color:rgba(239,68,68,.25);
+      background:rgba(239,68,68,.07);
+    }
+    .status.success{
+      color:var(--success);
+      border-color:rgba(46,172,108,.25);
+      background:rgba(46,172,108,.07);
+    }
+
+    .output{
+      white-space:pre-wrap;
+      min-height:320px;
+      padding:14px;
+      background:var(--s2);
+      border:1px solid var(--bd2);
+      border-radius:10px;
+      line-height:1.75;
+      color:var(--tx);
+    }
+
+    .small{
+      font-size:12px;
+      color:var(--t3);
+      line-height:1.5;
+    }
+
+    .history-item{
+      background:var(--s2);
+      border:1px solid var(--bd2);
+      border-radius:10px;
+      padding:10px;
+      margin-top:10px;
+      cursor:pointer;
+      transition:.15s;
+      color:var(--tx);
+      font-size:13px;
+      line-height:1.5;
+    }
+    .history-item:hover{
+      border-color:var(--orange);
+      transform:translateY(-1px);
+    }
+
+    .footer-strip{
+      position:fixed;
+      bottom:0;
+      left:0;
+      right:0;
+      height:2px;
+      background:linear-gradient(90deg,var(--orange),var(--gold));
+      z-index:15;
+    }
+  </style>
 </head>
-
 <body>
-<div class="container">
+  <header>
+    <div class="logo-wrap">
+      <div class="logo-box">MB</div>
+      <div class="logo-sep"></div>
+      <div class="logo-copy">
+        <div class="logo-title">Transcript Brain</div>
+        <div class="logo-tag">Midas Style Summary Engine</div>
+      </div>
+    </div>
 
-<h1>🧠 Transcript Brain</h1>
+    <div class="header-actions">
+      <button class="btn btn-gh" id="themeToggleBtn">🌙 Modo oscuro</button>
+      <button class="btn btn-cyan" id="exampleBtnTop">✨ Ejemplo</button>
+    </div>
+  </header>
 
-<div class="card">
-<h3>🔑 Configuración</h3>
+  <main class="page">
+    <section class="hero">
+      <div>
+        <h1>🧠 Smart Summaries</h1>
+        <p>Convierte transcripciones en resúmenes claros, visuales y accionables, con estructura ejecutiva, emojis y salida en español o inglés.</p>
+      </div>
 
-<input id="apiKey" placeholder="API Key">
+      <div class="hero-stats">
+        <div class="hstat"><span class="hpip"></span><span>Modo <b>AI</b></span></div>
+        <div class="hstat"><span class="hpip"></span><span>Templates <b>5</b></span></div>
+        <div class="hstat"><span class="hpip"></span><span>Idiomas <b>ES / EN</b></span></div>
+      </div>
+    </section>
 
-<div class="row">
-<select id="language">
-<option value="es">Español</option>
-<option value="en">English</option>
-</select>
+    <div class="grid">
+      <section>
+        <div class="card">
+          <h2>🔑 Configuración</h2>
+          <div class="sub">La API key se guarda solo en tu navegador local. No la metas escrita dentro del HTML.</div>
 
-<select id="tone">
-<option value="direct">Directo</option>
-<option value="formal">Formal</option>
-<option value="friendly">Friendly</option>
-</select>
-</div>
+          <label for="apiKey">API Key</label>
+          <input id="apiKey" type="password" placeholder="Pegá tu API key aquí" />
 
-<select id="template">
-<option value="update">Update visual</option>
-<option value="jira">Jira</option>
-<option value="email">Email</option>
-<option value="executive">Executive</option>
-<option value="one">One-liner</option>
-</select>
+          <div class="row">
+            <div>
+              <label for="model">Modelo</label>
+              <select id="model">
+                <option value="gpt-4.1-mini">gpt-4.1-mini</option>
+                <option value="gpt-4o-mini">gpt-4o-mini</option>
+              </select>
+            </div>
+            <div>
+              <label for="language">Idioma</label>
+              <select id="language">
+                <option value="es">Español</option>
+                <option value="en">English</option>
+              </select>
+            </div>
+          </div>
 
-</div>
+          <div class="row">
+            <div>
+              <label for="template">Template</label>
+              <select id="template">
+                <option value="update">Update visual</option>
+                <option value="executive">Resumen ejecutivo</option>
+                <option value="jira">Comentario Jira</option>
+                <option value="email">Correo / Email</option>
+                <option value="one">One-liner</option>
+              </select>
+            </div>
+            <div>
+              <label for="tone">Tono</label>
+              <select id="tone">
+                <option value="direct">Directo</option>
+                <option value="formal">Formal</option>
+                <option value="friendly">Friendly</option>
+              </select>
+            </div>
+          </div>
 
-<div class="card">
-<h3>📥 Input</h3>
-<textarea id="inputText"></textarea>
+          <div class="actions">
+            <button class="btn btn-gh" id="saveKeyBtn">💾 Guardar key</button>
+          </div>
+        </div>
 
-<button class="primary" onclick="generate()">🚀 Generar resumen</button>
-<button class="secondary" onclick="loadExample()">✨ Ejemplo</button>
-<button onclick="clearAll()">🗑️ Limpiar</button>
+        <div class="card">
+          <h2>📥 Input</h2>
+          <div class="sub">Pegá la transcripción, minuta o update técnico.</div>
 
-<div id="status" class="status"></div>
-</div>
+          <label for="inputText">Transcripción</label>
+          <textarea id="inputText" placeholder="Pegá aquí tu transcripción..."></textarea>
 
-<div class="card">
-<h3>📤 Output</h3>
-<div id="output" class="output"></div>
+          <div class="actions">
+            <button class="btn btn-or" id="generateBtn">🚀 Generar resumen</button>
+            <button class="btn btn-cyan" id="exampleBtn">✨ Cargar ejemplo</button>
+            <button class="btn btn-gh" id="clearBtn">🗑️ Limpiar</button>
+          </div>
 
-<button class="secondary" onclick="copy()">📋 Copiar</button>
-<button onclick="saveHistory()">💾 Guardar</button>
-</div>
+          <div id="status" class="status">Listo para generar resúmenes.</div>
+        </div>
+      </section>
 
-<div class="card">
-<h3>🗂️ Historial</h3>
-<div id="history"></div>
-<button onclick="clearHistory()">🧹 Borrar historial</button>
-</div>
+      <section>
+        <div class="card">
+          <h2>📤 Output</h2>
+          <div class="sub">Resumen listo para copiar o guardar.</div>
 
-</div>
+          <div id="output" class="output">Aquí aparecerá el resumen.</div>
 
-<script>
-const example = `Se está construyendo un modelo antifraude. Aún no está listo. Rolo hablará con Alejandra para montarlo en Jira.`
+          <div class="actions">
+            <button class="btn btn-cyan" id="copyBtn">📋 Copiar</button>
+            <button class="btn btn-gh" id="saveHistoryBtn">🧾 Guardar en historial</button>
+          </div>
+        </div>
 
-function buildPrompt(lang, template, tone) {
+        <div class="card">
+          <h3>🗂️ Historial</h3>
+          <div class="sub">Se guarda en tu navegador.</div>
+          <div id="history"></div>
+          <div class="actions">
+            <button class="btn btn-gh" id="clearHistoryBtn">🧹 Borrar historial</button>
+          </div>
+        </div>
 
-const base = lang === "en"
-? "Act as executive analyst. Create short visual summary using emojis."
-: "Actúa como analista ejecutivo. Crea resumen corto con emojis.";
+        <div class="card">
+          <h3>ℹ️ Nota</h3>
+          <div class="small">
+            Si no genera output, esta versión sí muestra el error real de la API para que sepás si el problema es la key, el modelo o la respuesta.
+          </div>
+        </div>
+      </section>
+    </div>
+  </main>
 
-const tones = {
-direct: lang==="en"?"Tone: direct":"Tono: directo",
-formal: lang==="en"?"Tone: formal":"Tono: formal",
-friendly: lang==="en"?"Tone: friendly":"Tono: friendly"
-};
+  <div class="footer-strip"></div>
 
-const templates = {
-update: `📢 Title
+  <script>
+    const exampleText = `0:02-2:36: Mae, no, todavía no. En la reunión de ayer el update fue que apenas se está construyendo el modelo. Están cargando data para identificar si un retiro puede ser fraudulento o no. Analizarán variables como apuestas, frecuencia de depósitos y comportamiento antes del retiro. Si el riesgo supera un threshold, el retiro se pondrá on hold hasta validación manual. Todavía falta probar el modelo, validar falsos positivos y luego exponerlo como servicio para que nosotros lo consumamos. Aún no hay planificación formal. Rolo hablará con Alejandra la próxima semana para montarlo en Jira y darle trazabilidad.`;
+
+    const $ = (id) => document.getElementById(id);
+
+    function setStatus(message, type = "info") {
+      const el = $("status");
+      el.className = "status";
+      if (type === "error") el.classList.add("error");
+      if (type === "success") el.classList.add("success");
+      el.textContent = message;
+    }
+
+    function buildPrompt(lang, template, tone) {
+      const isEn = lang === "en";
+
+      const base = isEn
+        ? `Act as a senior executive analyst. Convert the transcript into a short, highly scannable summary. Always use emojis in headings or bullets. Do not invent facts. Keep it clear, visual, and actionable.`
+        : `Actúa como un analista ejecutivo senior. Convierte la transcripción en un resumen corto y muy fácil de escanear. Usa siempre emojis en títulos o bullets. No inventes datos. Hazlo claro, visual y accionable.`;
+
+      const toneText = {
+        direct: isEn ? "Tone: direct and concise." : "Tono: directo y conciso.",
+        formal: isEn ? "Tone: formal and professional." : "Tono: formal y profesional.",
+        friendly: isEn ? "Tone: friendly but professional." : "Tono: friendly pero profesional."
+      }[tone];
+
+      const templateText = {
+        update: isEn
+          ? `Format:
+📢 Title
 
 🟡 Status
 - ...
 
-⚙️ ${lang==="en"?"What is happening":"Qué está pasando"}
+⚙️ What is happening
 - ...
 
 ⚠️ Impact
 - ...
 
-🧠 ${lang==="en"?"Next step":"Próximo paso"}
+🧠 Next step
 - ...
 
 ⏳ Timeline
-- ...`,
+- ...
 
-jira: lang==="en"?"Create Jira comment with emojis":"Comentario Jira con emojis",
+Rules:
+- Maximum 6 bullets if possible
+- Short phrases
+- Easy to scan`
+          : `Formato:
+📢 Título
 
-email: lang==="en"?"Write short professional email":"Correo profesional corto",
+🟡 Estado
+- ...
 
-executive: lang==="en"?"Executive summary bullets":"Resumen ejecutivo bullets",
+⚙️ Qué está pasando
+- ...
 
-one: lang==="en"?"One executive sentence":"Una sola línea ejecutiva"
-};
+⚠️ Impacto
+- ...
 
-return `${base}\n${tones[tone]}\n${templates[template]}`;
-}
+🧠 Próximo paso
+- ...
 
-async function generate() {
-const apiKey = document.getElementById("apiKey").value;
-const text = document.getElementById("inputText").value;
-const lang = document.getElementById("language").value;
-const template = document.getElementById("template").value;
-const tone = document.getElementById("tone").value;
+⏳ Timeline
+- ...
 
-if(!apiKey || !text){
-setStatus("⚠️ Falta info");
-return;
-}
+Reglas:
+- Máximo 6 bullets si es posible
+- Frases cortas
+- Fácil de escanear`,
 
-setStatus("⏳ Generando...");
+        executive: isEn
+          ? `Create a short executive summary with emojis. Focus on state, impact, risks, and next step.`
+          : `Crea un resumen ejecutivo corto con emojis. Enfócate en estado, impacto, riesgos y próximo paso.`,
 
-try{
-const res = await fetch("https://api.openai.com/v1/chat/completions",{
-method:"POST",
-headers:{
-"Content-Type":"application/json",
-"Authorization":"Bearer "+apiKey
-},
-body:JSON.stringify({
-model:"gpt-4.1-mini",
-messages:[
-{role:"system",content:buildPrompt(lang,template,tone)},
-{role:"user",content:text}
-]
-})
-});
+        jira: isEn
+          ? `Return a Jira-ready comment with emojis. Brief, professional, and action-oriented.`
+          : `Devuelve un comentario listo para Jira con emojis. Breve, profesional y orientado a la acción.`,
 
-const data = await res.json();
+        email: isEn
+          ? `Return a short professional email. Use emojis only in headers if natural. Include greeting and closing.`
+          : `Devuelve un correo profesional corto. Usa emojis solo en encabezados si se ve natural. Incluye saludo y cierre.`,
 
-if(!res.ok) throw new Error(data.error.message);
+        one: isEn
+          ? `Return one executive line with emojis. Maximum 30 words.`
+          : `Devuelve una sola línea ejecutiva con emojis. Máximo 30 palabras.`
+      }[template];
 
-document.getElementById("output").innerText =
-data.choices[0].message.content;
+      return `${base}\n\n${toneText}\n\n${templateText}`;
+    }
 
-setStatus("✅ Listo");
+    async function generateSummary() {
+      const apiKey = $("apiKey").value.trim();
+      const input = $("inputText").value.trim();
+      const language = $("language").value;
+      const template = $("template").value;
+      const tone = $("tone").value;
+      const model = $("model").value;
+      const output = $("output");
 
-}catch(e){
-setStatus("❌ "+e.message);
-}
-}
+      if (!apiKey) {
+        setStatus("⚠️ Agregá tu API key antes de generar el resumen.", "error");
+        return;
+      }
 
-function setStatus(msg){
-document.getElementById("status").innerText = msg;
-}
+      if (!input) {
+        setStatus("⚠️ Pegá una transcripción antes de generar el resumen.", "error");
+        return;
+      }
 
-function loadExample(){
-document.getElementById("inputText").value = example;
-}
+      setStatus("⏳ Generando resumen...");
+      output.textContent = language === "en" ? "Generating summary..." : "Generando resumen...";
 
-function clearAll(){
-document.getElementById("inputText").value="";
-document.getElementById("output").innerText="";
-}
+      try {
+        const response = await fetch("https://api.openai.com/v1/chat/completions", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${apiKey}`
+          },
+          body: JSON.stringify({
+            model,
+            temperature: 0.2,
+            messages: [
+              { role: "system", content: buildPrompt(language, template, tone) },
+              { role: "user", content: input }
+            ]
+          })
+        });
 
-function copy(){
-navigator.clipboard.writeText(
-document.getElementById("output").innerText
-);
-setStatus("📋 Copiado");
-}
+        const rawText = await response.text();
+        let data = null;
 
-function saveHistory(){
-const out = document.getElementById("output").innerText;
-if(!out) return;
+        try {
+          data = JSON.parse(rawText);
+        } catch {
+          throw new Error(`Respuesta no válida de la API:\n${rawText}`);
+        }
 
-let history = JSON.parse(localStorage.getItem("h")||"[]");
-history.unshift(out);
-localStorage.setItem("h",JSON.stringify(history));
-renderHistory();
-}
+        if (!response.ok) {
+          const apiMessage = data?.error?.message || `HTTP ${response.status}`;
+          throw new Error(apiMessage);
+        }
 
-function renderHistory(){
-const history = JSON.parse(localStorage.getItem("h")||"[]");
-const div = document.getElementById("history");
-div.innerHTML="";
+        const content = data?.choices?.[0]?.message?.content;
+        if (!content) {
+          throw new Error(language === "en"
+            ? "No content returned by the model."
+            : "El modelo no devolvió contenido.");
+        }
 
-history.forEach(h=>{
-const el = document.createElement("div");
-el.innerText = h.substring(0,120)+"...";
-el.onclick=()=>document.getElementById("output").innerText=h;
-div.appendChild(el);
-});
-}
+        output.textContent = content;
+        setStatus(language === "en" ? "✅ Summary generated." : "✅ Resumen generado.", "success");
+      } catch (error) {
+        output.textContent = language === "en"
+          ? "An error occurred while generating the summary."
+          : "Ocurrió un error al generar el resumen.";
+        setStatus(`❌ ${error.message}`, "error");
+      }
+    }
 
-function clearHistory(){
-localStorage.removeItem("h");
-renderHistory();
-}
+    function copyOutput() {
+      const text = $("output").textContent.trim();
+      if (!text || text === "Aquí aparecerá el resumen.") {
+        setStatus("⚠️ No hay contenido para copiar.", "error");
+        return;
+      }
+      navigator.clipboard.writeText(text);
+      setStatus("📋 Resumen copiado.", "success");
+    }
 
-renderHistory();
-</script>
+    function saveHistory() {
+      const output = $("output").textContent.trim();
+      const input = $("inputText").value.trim();
+      if (!output || output === "Aquí aparecerá el resumen.") {
+        setStatus("⚠️ No hay resumen para guardar.", "error");
+        return;
+      }
 
+      const history = JSON.parse(localStorage.getItem("tb_history") || "[]");
+      history.unshift({
+        id: Date.now(),
+        createdAt: new Date().toLocaleString(),
+        input,
+        output
+      });
+      localStorage.setItem("tb_history", JSON.stringify(history.slice(0, 15)));
+      renderHistory();
+      setStatus("🧾 Resumen guardado en historial.", "success");
+    }
+
+    function renderHistory() {
+      const history = JSON.parse(localStorage.getItem("tb_history") || "[]");
+      const container = $("history");
+      container.innerHTML = "";
+
+      if (!history.length) {
+        container.innerHTML = "<div class='small'>No hay historial todavía.</div>";
+        return;
+      }
+
+      history.forEach((item) => {
+        const div = document.createElement("div");
+        div.className = "history-item";
+        div.textContent = item.output.slice(0, 140) + (item.output.length > 140 ? "..." : "");
+        div.title = item.createdAt;
+        div.onclick = () => {
+          $("inputText").value = item.input;
+          $("output").textContent = item.output;
+          setStatus("📂 Historial cargado.", "success");
+        };
+        container.appendChild(div);
+      });
+    }
+
+    function clearHistory() {
+      localStorage.removeItem("tb_history");
+      renderHistory();
+      setStatus("🧹 Historial borrado.", "success");
+    }
+
+    function loadExample() {
+      $("inputText").value = exampleText;
+      setStatus("✨ Ejemplo cargado.", "success");
+    }
+
+    function clearAll() {
+      $("inputText").value = "";
+      $("output").textContent = "Aquí aparecerá el resumen.";
+      setStatus("🧹 Contenido limpiado.", "success");
+    }
+
+    function saveKeyLocally() {
+      const key = $("apiKey").value.trim();
+      if (!key) {
+        setStatus("⚠️ No hay API key para guardar.", "error");
+        return;
+      }
+      localStorage.setItem("tb_api_key", key);
+      setStatus("💾 API key guardada en este navegador.", "success");
+    }
+
+    function loadSavedKey() {
+      const saved = localStorage.getItem("tb_api_key");
+      if (saved) $("apiKey").value = saved;
+    }
+
+    function toggleTheme() {
+      document.body.classList.toggle("dark-mode");
+      const btn = $("themeToggleBtn");
+      const dark = document.body.classList.contains("dark-mode");
+      btn.textContent = dark ? "☀️ Modo claro" : "🌙 Modo oscuro";
+      localStorage.setItem("tb_theme", dark ? "dark" : "light");
+    }
+
+    function loadTheme() {
+      const saved = localStorage.getItem("tb_theme");
+      if (saved === "dark") {
+        document.body.classList.add("dark-mode");
+        $("themeToggleBtn").textContent = "☀️ Modo claro";
+      }
+    }
+
+    $("generateBtn").addEventListener("click", generateSummary);
+    $("exampleBtn").addEventListener("click", loadExample);
+    $("exampleBtnTop").addEventListener("click", loadExample);
+    $("clearBtn").addEventListener("click", clearAll);
+    $("copyBtn").addEventListener("click", copyOutput);
+    $("saveHistoryBtn").addEventListener("click", saveHistory);
+    $("clearHistoryBtn").addEventListener("click", clearHistory);
+    $("saveKeyBtn").addEventListener("click", saveKeyLocally);
+    $("themeToggleBtn").addEventListener("click", toggleTheme);
+
+    loadSavedKey();
+    loadTheme();
+    renderHistory();
+  </script>
 </body>
 </html>
