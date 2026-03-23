@@ -134,43 +134,67 @@ textarea{min-height:340px;resize:vertical;line-height:1.7}
         <div class="sub">Todo corre en tu navegador. No se guarda historial ni datos persistentes, salvo el tema visual.</div>
         <div class="row">
           <div>
+            <label for="workMode">Qué ocupás</label>
+            <select id="workMode">
+              <option value="summary">Resumen</option>
+              <option value="userstory">Historia de usuario</option>
+            </select>
+          </div>
+          <div>
             <label for="language">Idioma de salida</label>
             <select id="language">
               <option value="es">Español</option>
               <option value="en">English</option>
             </select>
           </div>
-          <div>
-            <label for="template">Template</label>
-            <select id="template">
-              <option value="update">Update visual</option>
-              <option value="executive">Resumen ejecutivo</option>
-              <option value="jira">Comentario Jira</option>
-              <option value="email">Correo / Email</option>
-              <option value="one">One-liner</option>
-            </select>
+        </div>
+        <div id="summaryControls">
+          <div class="row">
+            <div>
+              <label for="template">Template</label>
+              <select id="template">
+                <option value="update">Update visual</option>
+                <option value="executive">Resumen ejecutivo</option>
+                <option value="jira">Comentario Jira</option>
+                <option value="email">Correo / Email</option>
+                <option value="one">One-liner</option>
+              </select>
+            </div>
+            <div>
+              <label for="tone">Tono</label>
+              <select id="tone">
+                <option value="direct">Directo / Direct</option>
+                <option value="formal">Formal</option>
+                <option value="friendly">Friendly</option>
+                <option value="executive">Executive</option>
+              </select>
+            </div>
+          </div>
+          <div class="row">
+            <div>
+              <label for="lengthMode">Longitud</label>
+              <select id="lengthMode">
+                <option value="short">Corta / Short</option>
+                <option value="medium">Media / Medium</option>
+                <option value="detailed">Detallada / Detailed</option>
+              </select>
+            </div>
+            <div>
+              <label>&nbsp;</label>
+              <div class="note" style="padding:13px 14px">El resumen mantiene templates, tono y longitud.</div>
+            </div>
+          </div>
+          <div id="templatePreview" class="template-preview"></div>
+        </div>
+        <div id="userStoryControls" style="display:none">
+          <div class="note">
+            La historia de usuario se generará con esta estructura fija:<br>
+            <strong>Description</strong><br>
+            <strong>Value</strong><br>
+            <strong>Scope</strong><br><br>
+            <span id="userStoryHint">El idioma se define con la opción de salida seleccionada arriba.</span>
           </div>
         </div>
-        <div class="row">
-          <div>
-            <label for="tone">Tono</label>
-            <select id="tone">
-              <option value="direct">Directo / Direct</option>
-              <option value="formal">Formal</option>
-              <option value="friendly">Friendly</option>
-              <option value="executive">Executive</option>
-            </select>
-          </div>
-          <div>
-            <label for="lengthMode">Longitud</label>
-            <select id="lengthMode">
-              <option value="short">Corta / Short</option>
-              <option value="medium">Media / Medium</option>
-              <option value="detailed">Detallada / Detailed</option>
-            </select>
-          </div>
-        </div>
-        <div id="templatePreview" class="template-preview"></div>
       </div>
 
       <div class="card">
@@ -460,6 +484,21 @@ function formatSummary(summary, lang, template, tone, lengthMode) {
 
   if (template === 'email') {
     return lang === 'en'
+      ? `Subject: ${summary.title}\n\nHello team,\n\n📢 Please find below the current update:\n🟡 Status: ${summary.status}.\n⚙️ What is happening: ${summary.happening.join(' ')}\n⚠️ Impact: ${summary.impact}\n🧠 Next step: ${summary.nextStefunction formatSummary(summary, lang, template, tone, lengthMode) {
+  const concise = lengthMode === 'short';
+
+  if (template === 'one') {
+    return `📢 ${summary.title}: 🟡 ${summary.status}; 🧠 ${summary.nextStep.replace(/\.$/, '')}; ⏳ ${summary.timeline.replace(/\.$/, '')}.`;
+  }
+
+  if (template === 'jira') {
+    return lang === 'en'
+      ? `📢 ${summary.title}\n\n🟡 Current status: ${summary.status}.\n⚙️ ${summary.happening[0]}\n⚠️ Impact: ${summary.impact}\n🧠 Next step: ${summary.nextStep}\n⏳ Timeline: ${summary.timeline}`
+      : `📢 ${summary.title}\n\n🟡 Estado actual: ${summary.status}.\n⚙️ ${summary.happening[0]}\n⚠️ Impacto: ${summary.impact}\n🧠 Próximo paso: ${summary.nextStep}\n⏳ Timeline: ${summary.timeline}`;
+  }
+
+  if (template === 'email') {
+    return lang === 'en'
       ? `Subject: ${summary.title}\n\nHello team,\n\n📢 Please find below the current update:\n🟡 Status: ${summary.status}.\n⚙️ What is happening: ${summary.happening.join(' ')}\n⚠️ Impact: ${summary.impact}\n🧠 Next step: ${summary.nextStep}\n⏳ Timeline: ${summary.timeline}\n\n${tone === 'friendly' ? 'Thanks,' : 'Best regards,'}`
       : `Asunto: ${summary.title}\n\nHola equipo,\n\n📢 Comparto el update actual:\n🟡 Estado: ${summary.status}.\n⚙️ Qué está pasando: ${summary.happening.join(' ')}\n⚠️ Impacto: ${summary.impact}\n🧠 Próximo paso: ${summary.nextStep}\n⏳ Timeline: ${summary.timeline}\n\n${tone === 'friendly' ? 'Gracias,' : 'Saludos,'}`;
   }
@@ -476,11 +515,63 @@ function formatSummary(summary, lang, template, tone, lengthMode) {
     : `📢 ${summary.title}\n\n🟡 Estado\n- ${summary.status}\n\n⚙️ Qué está pasando\n${happeningBlock.map(x => `- ${x}`).join('\n')}\n\n⚠️ Impacto\n- ${summary.impact}\n\n🧠 Próximo paso\n- ${summary.nextStep}\n\n⏳ Timeline\n- ${summary.timeline}`;
 }
 
-function updateTemplatePreview() {
+function buildUserStory(text, lang) {
+  const sentences = splitSentences(text);
+  const cleanedText = preprocessText(text).toLowerCase();
+
+  const actor = lang === 'en' ? 'user' : 'usuario';
+
+  const actionSentence = findSentence(sentences, [
+    'necesita','ocupa','requiere','debe','quiere','solicita','permitir','mostrar','validar','bloquear','poner on hold','autorizar',
+    'needs','requires','should','wants','requests','allow','display','validate','block','put on hold','approve'
+  ]) || (lang === 'en' ? 'The user needs the system to support the requested flow.' : 'El usuario necesita que el sistema soporte el flujo solicitado.');
+
+  const valueSentence = findSentence(sentences, [
+    'para','con el fin de','de forma que','evitar','reducir','mejorar','dar trazabilidad','validación manual','riesgo',
+    'so that','in order to','avoid','reduce','improve','tracking','manual validation','risk'
+  ]) || (lang === 'en' ? 'This will improve control, clarity, and operational follow-up.' : 'Esto mejorará el control, la claridad y el seguimiento operativo.');
+
+  const scopeMatches = findSentences(sentences, [
+    'mostrar','visualizar','abrir','validar','bloquear','autorizar','integración','servicio','modelo','riesgo','threshold','jira','trazabilidad',
+    'display','open','validate','block','approve','integration','service','model','risk','tracking'
+  ], 4);
+
+  let description;
+  if (lang === 'en') {
+    description = `As a ${actor}, I want the system to support the requested behavior so the process can be handled clearly and consistently.`;
+    if (/fraud|withdrawal|risk|retiro|fraude/.test(cleanedText)) {
+      description = `As a ${actor}, I want the system to identify and manage risky withdrawals so that suspicious cases can be reviewed before completion.`;
+    } else if (/jira|tracking|trazabilidad/.test(cleanedText)) {
+      description = `As a ${actor}, I want the work to be tracked clearly so that progress, ownership, and follow-up are visible.`;
+    } else if (/service|integraci|servicio/.test(cleanedText)) {
+      description = `As a ${actor}, I want the system to integrate the required service or flow so that the requested operation works end to end.`;
+    }
+  } else {
+    description = `Como ${actor}, quiero que el sistema soporte el comportamiento solicitado para que el proceso se gestione de forma clara y consistente.`;
+    if (/fraud|withdrawal|risk|retiro|fraude/.test(cleanedText)) {
+      description = `Como ${actor}, quiero que el sistema identifique y gestione retiros riesgosos para que los casos sospechosos puedan revisarse antes de completarse.`;
+    } else if (/jira|tracking|trazabilidad/.test(cleanedText)) {
+      description = `Como ${actor}, quiero que el trabajo tenga trazabilidad clara para que el avancfunction updateTemplatePreview() {
   const lang = $('language').value;
+  const mode = $('workMode').value;
   const template = $('template').value;
   const tone = $('tone').value;
   const lengthMode = $('lengthMode').value;
+
+  if (mode === 'userstory') {
+    $('summaryControls').style.display = 'none';
+    $('userStoryControls').style.display = 'block';
+    $('templatePreview').style.display = 'none';
+    $('userStoryHint').textContent = lang === 'en'
+      ? 'The user story will be generated in English with the fixed structure: Description, Value, Scope.'
+      : 'La historia de usuario se generará en español con la estructura fija: Description, Value, Scope.';
+    return;
+  }
+
+  $('summaryControls').style.display = 'block';
+  $('userStoryControls').style.display = 'none';
+  $('templatePreview').style.display = 'block';
+
   const previews = {
     es: {
       update: 'Formato visual con secciones: Estado, Qué está pasando, Impacto, Próximo paso y Timeline.',
@@ -536,6 +627,7 @@ function updateStats() {
 function generateSummary() {
   const input = $('inputText').value.trim();
   const lang = $('language').value;
+  const mode = $('workMode').value;
   const template = $('template').value;
   const tone = $('tone').value;
   const lengthMode = $('lengthMode').value;
@@ -549,14 +641,21 @@ function generateSummary() {
 
   try {
     setStatus(ui.generating);
-    const summary = buildSummary(input, lang, tone, lengthMode);
-    const formatted = formatSummary(summary, lang, template, tone, lengthMode);
+    let formatted = '';
+
+    if (mode === 'userstory') {
+      formatted = buildUserStory(input, lang);
+    } else {
+      const summary = buildSummary(input, lang, tone, lengthMode);
+      formatted = formatSummary(summary, lang, template, tone, lengthMode);
+    }
+
     output.classList.remove('empty');
     output.textContent = formatted;
     setStatus(ui.generated, 'success');
   } catch (error) {
     output.classList.remove('empty');
-    output.textContent = lang === 'en' ? 'An error occurred while generating the summary.' : 'Ocurrió un error al generar el resumen.';
+    output.textContent = lang === 'en' ? 'An error occurred while generating the output.' : 'Ocurrió un error al generar la salida.';
     setStatus(`❌ ${error.message}`, 'error');
   }
 }
@@ -595,7 +694,7 @@ $('copyBtn').addEventListener('click', copyOutput);
 $('clearBtn').addEventListener('click', clearAll);
 $('themeToggleBtn').addEventListener('click', toggleTheme);
 $('inputText').addEventListener('input', updateStats);
-['language','template','tone','lengthMode'].forEach(id => $(id).addEventListener('change', () => { updateTemplatePreview(); updateStats(); if ($('output').classList.contains('empty')) $('output').textContent = currentUi().emptyOutput; setStatus(currentUi().ready); }));
+['workMode','language','template','tone','lengthMode'].forEach(id => $(id).addEventListener('change', () => { updateTemplatePreview(); updateStats(); if ($('output').classList.contains('empty')) $('output').textContent = currentUi().emptyOutput; setStatus(currentUi().ready); }));
 
 loadTheme();
 updateTemplatePreview();
