@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BYTES Brain</title>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=Manrope:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f4f8ff;--bg2:#eaf4ff;--card:#fff;--card2:#f7fbff;--line:#d8e7ff;--line2:#bfd8ff;--text:#0b1b2b;--muted:#5f7489;--blue:#207aff;--cyan:#00c2ff;--success:#0f9f6e;--danger:#d9485f;--shadow:0 16px 40px rgba(23,84,166,.10);--radius:18px}
+body.dark-mode{--bg:#081522;--bg2:#0d2032;--card:#0f2236;--card2:#122840;--line:#1d3b56;--line2:#295376;--text:#ebf6ff;--muted:#8bb2cf;--blue:#4f95ff;--cyan:#44d7ff;--shadow:0 18px 44px rgba(0,0,0,.35)}
+*{box-sizing:border-box}html,body{margin:0;padding:0;font-family:'Manrope',sans-serif;background:linear-gradient(180deg,var(--bg),var(--bg2));color:var(--text)}
+body::before{content:'';position:fixed;inset:0;pointer-events:none;opacity:.45;background-image:linear-gradient(rgba(32,122,255,.05) 1px,transparent 1px),linear-gradient(90deg,rgba(32,122,255,.05) 1px,transparent 1px);background-size:42px 42px}
+button,input,select,textarea{font:inherit}
+.header{position:sticky;top:0;z-index:20;backdrop-filter:blur(12px);background:color-mix(in srgb,var(--card) 88%,transparent);border-bottom:1px solid var(--line)}
+.header-inner{max-width:1380px;margin:auto;padding:14px 22px;display:flex;align-items:center;justify-content:space-between;gap:16px}
+.brand{display:flex;align-items:center;gap:14px;min-width:0}.brand-mark{height:42px;width:42px;border-radius:12px;display:grid;place-items:center;background:linear-gradient(135deg,var(--blue),var(--cyan));color:white;font-family:'Sora',sans-serif;font-weight:800;box-shadow:var(--shadow)}
+.brand-copy strong{display:block;font-family:'Sora',sans-serif;font-size:15px;letter-spacing:.04em}.brand-copy small{display:block;color:var(--muted);font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.18em;text-transform:uppercase;white-space:nowrap}
+.header-actions{display:flex;gap:10px;align-items:center;flex-wrap:wrap}.page{position:relative;z-index:1;max-width:1380px;margin:auto;padding:26px 22px 34px}
+.hero{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;flex-wrap:wrap;margin-bottom:18px}.hero h1{margin:0 0 8px;font-family:'Sora',sans-serif;font-size:clamp(1.8rem,2.8vw,2.9rem);line-height:1.02;letter-spacing:-.04em}.hero p{margin:0;max-width:840px;color:var(--muted);line-height:1.65}
+.badges{display:flex;gap:10px;flex-wrap:wrap}.badge{padding:10px 12px;border-radius:999px;background:color-mix(in srgb,var(--card2) 88%,transparent);border:1px solid var(--line);font-size:12px;color:var(--muted);display:flex;align-items:center;gap:8px;box-shadow:var(--shadow)}.badge-dot{width:8px;height:8px;border-radius:50%;background:linear-gradient(135deg,var(--blue),var(--cyan))}
+.grid{display:grid;grid-template-columns:1.05fr .95fr;gap:20px}@media (max-width:1100px){.grid{grid-template-columns:1fr}}
+.card{background:linear-gradient(180deg,var(--card),var(--card2));border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:18px}.card+.card{margin-top:18px}.card h2,.card h3{margin:0 0 6px;font-family:'Sora',sans-serif;letter-spacing:-.02em}.sub{color:var(--muted);font-size:13px;line-height:1.55;margin-bottom:14px}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:12px}@media (max-width:720px){.row{grid-template-columns:1fr}}
+label{display:block;margin:0 0 7px;font-family:'JetBrains Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:.14em;color:var(--muted)}
+input,select,textarea{width:100%;border-radius:14px;border:1px solid var(--line2);background:color-mix(in srgb,var(--card) 70%,var(--bg2));color:var(--text);padding:13px 14px;outline:none;transition:.18s box-shadow,.18s border-color}
+input:focus,select:focus,textarea:focus{border-color:var(--blue);box-shadow:0 0 0 4px rgba(32,122,255,.12)}textarea{min-height:340px;resize:vertical;line-height:1.7}
+.helper{font-size:12px;color:var(--muted);margin-top:-4px;margin-bottom:10px}.btn{border:none;border-radius:14px;padding:12px 16px;cursor:pointer;font-family:'Sora',sans-serif;font-weight:700;letter-spacing:.02em;transition:.18s transform,.18s opacity,.18s background,.18s border-color;display:inline-flex;align-items:center;gap:10px;justify-content:center}.btn:hover{transform:translateY(-1px)}
+.btn-primary{background:linear-gradient(135deg,var(--blue),var(--cyan));color:white;box-shadow:0 12px 24px rgba(32,122,255,.24)}.btn-secondary{background:transparent;border:1px solid var(--line2);color:var(--text)}.btn-soft{background:rgba(0,194,255,.10);color:var(--blue);border:1px solid rgba(0,194,255,.22)}.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
+.status{margin-top:14px;padding:13px 14px;border-radius:14px;border:1px solid var(--line2);background:rgba(32,122,255,.06);color:var(--muted);line-height:1.55;font-size:13px;white-space:pre-wrap}.status.success{background:rgba(15,159,110,.08);border-color:rgba(15,159,110,.22);color:var(--success)}.status.error{background:rgba(217,72,95,.08);border-color:rgba(217,72,95,.22);color:var(--danger)}
+.output{white-space:pre-wrap;min-height:470px;padding:18px;border-radius:16px;border:1px solid var(--line2);background:linear-gradient(180deg,color-mix(in srgb,var(--card) 60%,var(--bg2)),color-mix(in srgb,var(--card2) 84%,transparent));line-height:1.8;font-size:15px;overflow:auto}.output.empty{display:grid;place-items:center;color:var(--muted);font-size:14px}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:14px}@media (max-width:850px){.stats{grid-template-columns:1fr 1fr}}@media (max-width:520px){.stats{grid-template-columns:1fr}}.stat{padding:12px 14px;border-radius:14px;background:rgba(32,122,255,.05);border:1px solid var(--line);font-size:12px;color:var(--muted)}.stat b{display:block;color:var(--text);font-size:18px;font-family:'Sora',sans-serif;margin-top:4px}
+.note,.template-preview{padding:14px;border-radius:14px;border:1px dashed var(--line2);background:rgba(32,122,255,.04);font-size:12px;line-height:1.6;color:var(--muted)}
+.trace{margin-top:12px;padding:12px 14px;border-radius:14px;border:1px dashed var(--line2);background:rgba(32,122,255,.04);font-size:12px;color:var(--muted);line-height:1.6}.trace strong{display:block;color:var(--text);margin-bottom:6px}
+.footer-strip{position:fixed;left:0;right:0;bottom:0;height:2px;background:linear-gradient(90deg,var(--blue),var(--cyan));z-index:30}.kbd{padding:4px 8px;border-radius:8px;border:1px solid var(--line);background:rgba(32,122,255,.05);font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--muted)}
+.hidden{display:none!important}
+</style>
+</head>
+<body>
+<header class="header">
+  <div class="header-inner">
+    <div class="brand">
+      <div class="brand-mark">B</div>
+      <div class="brand-copy">
+        <strong>BYTES BRAIN</strong>
+        <small>SMART LOCAL SUMMARY ENGINE</small>
+      </div>
+    </div>
+    <div class="header-actions">
+      <button class="btn btn-secondary" id="themeToggleBtn">🌙 Tema</button>
+      <div class="kbd">Standalone</div>
+    </div>
+  </div>
+</header>
+<main class="page">
+  <section class="hero">
+    <div>
+      <h1>🧠 Resúmenes y user stories con más sentido</h1>
+      <p>La lógica ahora prioriza frases reales del input, separa mejor estado, impacto, siguiente paso y timeline, y evita inventar texto genérico cuando la fuente no lo dice.</p>
+    </div>
+    <div class="badges">
+      <div class="badge"><span class="badge-dot"></span>Más fiel al input</div>
+      <div class="badge"><span class="badge-dot"></span>Mejor lógica de output</div>
+      <div class="badge"><span class="badge-dot"></span>100% local</div>
+    </div>
+  </section>
+  <div class="grid">
+    <section>
+      <div class="card">
+        <h2>⚙️ Configuración</h2>
+        <div class="sub">Elegí si ocupás un resumen o una historia de usuario.</div>
+        <div class="row">
+          <div>
+            <label for="workMode">Qué ocupás</label>
+            <select id="workMode"><option value="summary">Resumen</option><option value="userstory">Historia de usuario</option></select>
+          </div>
+          <div>
+            <label for="language">Idioma de salida</label>
+            <select id="language"><option value="es">Español</option><option value="en">English</option></select>
+          </div>
+        </div>
+        <div id="summaryControls">
+          <div class="row">
+            <div><label for="template">Template</label><select id="template"><option value="update">Update visual</option><option value="executive">Resumen ejecutivo</option><option value="jira">Comentario Jira</option><option value="email">Correo / Email</option><option value="one">One-liner</option></select></div>
+            <div><label for="tone">Tono</label><select id="tone"><option value="direct">Directo / Direct</option><option value="formal">Formal</option><option value="friendly">Friendly</option><option value="executive">Executive</option></select></div>
+          </div>
+          <div class="row">
+            <div><label for="lengthMode">Longitud</label><select id="lengthMode"><option value="short">Corta / Short</option><option value="medium">Media / Medium</option><option value="detailed">Detallada / Detailed</option></select></div>
+            <div><label>&nbsp;</label><div class="note">Estas opciones solo aplican al modo Resumen.</div></div>
+          </div>
+          <div id="templatePreview" class="template-preview"></div>
+        </div>
+        <div id="userStoryControls" style="display:none">
+          <div class="note"><strong>Historia de usuario</strong><br>Se generará con una estructura fija y con bullets sacados del contexto real.<br><br><strong>Description</strong><br><strong>Value</strong><br><strong>Scope</strong><br><br><span id="userStoryHint"></span></div>
+        </div>
+      </div>
+      <div class="card">
+        <h2>📥 Input</h2>
+        <div class="sub">Pegá la transcripción o notas. El motor limpia timestamps, baja ruido y clasifica mejor la intención del texto.</div>
+        <label for="inputText">Transcripción</label>
+        <textarea id="inputText" placeholder="Pega aquí tu texto..."></textarea>
+        <div class="helper">Tip: la app ahora intenta usar frases reales del input antes de inferir texto.</div>
+        <div class="actions"><button class="btn btn-primary" id="generateBtn">🚀 Generar</button><button class="btn btn-secondary" id="clearBtn">🗑️ Limpiar</button></div>
+        <div class="stats">
+          <div class="stat">Palabras<b id="wordCount">0</b></div>
+          <div class="stat">Líneas<b id="lineCount">0</b></div>
+          <div class="stat">Procesabilidad<b id="qualityScore">—</b></div>
+          <div class="stat">Idioma detectado<b id="detectedLang">—</b></div>
+        </div>
+        <div id="status" class="status">Listo para generar salidas.</div>
+      </div>
+    </section>
+    <section>
+      <div class="card">
+        <div style="display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:12px">
+          <div><h2>📤 Output</h2><div class="sub" style="margin-bottom:0">Más lógico, menos genérico.</div></div>
+          <div class="actions" style="margin-top:0"><button class="btn btn-soft" id="copyBtn">📋 Copiar</button></div>
+        </div>
+        <div id="output" class="output empty">Aquí aparecerá el resultado final.</div>
+        <div id="traceBox" class="trace hidden"></div>
+      </div>
+      <div class="card">
+        <h3>ℹ️ Mejora aplicada</h3>
+        <div class="note">• Se mejoró la lógica del resumen para separar estado, impacto, siguiente paso y timeline.<br>• Se usan frases fuente rankeadas en vez de keywords sueltas.<br>• Cuando no hay dato explícito, el output lo dice en lugar de inventarlo.<br>• La historia de usuario ahora arma alcance con acciones concretas detectadas en el texto.</div>
+      </div>
+    </section>
+  </div>
+</main>
+<div class="footer-strip"></div>
+<script>
+const $ = id => document.getElementById(id);
+
+const UI_TEXT = {
+  es:{ready:'Listo para generar salidas.',pasteFirst:'⚠️ Pegá una transcripción antes de generar el resultado.',generating:'⏳ Analizando y estructurando...',generated:'✅ Resultado generado.',copied:'📋 Resultado copiado.',copyFailed:'⚠️ No se pudo copiar automáticamente. Copialo manualmente.',nothingToCopy:'⚠️ No hay contenido para copiar.',cleared:'🧹 Contenido limpiado.',emptyOutput:'Aquí aparecerá el resultado final.',detectedEs:'Español',detectedEn:'Inglés',detectedMixed:'Mixto',detectedUnknown:'Indefinido'},
+  en:{ready:'Ready to generate output.',pasteFirst:'⚠️ Paste a transcript before generating the result.',generating:'⏳ Analyzing and structuring...',generated:'✅ Output generated.',copied:'📋 Output copied.',copyFailed:'⚠️ Automatic copy failed. Please copy manually.',nothingToCopy:'⚠️ There is no content to copy.',cleared:'🧹 Content cleared.',emptyOutput:'Your final result will appear here.',detectedEs:'Spanish',detectedEn:'English',detectedMixed:'Mixed',detectedUnknown:'Undefined'}
+};
+
+const LABELS = {
+  es:{update:'Formato visual con Estado, Qué está pasando, Impacto, Próximo paso y Timeline.',executive:'Versión breve y ejecutiva centrada en decisión, impacto y siguiente acción.',jira:'Comentario corto, listo para Jira, directo y accionable.',email:'Correo corto y profesional con saludo y cierre.',one:'Una sola línea ejecutiva, rápida de leer.',direct:'Directo',formal:'Formal',friendly:'Friendly',executiveTone:'Executive',short:'Corta',medium:'Media',detailed:'Detallada',what:'Qué está pasando',status:'Estado',impact:'Impacto',next:'Próximo paso',timeline:'Timeline',sources:'Frases fuente usadas',explicit:'Basado principalmente en frases explícitas del input.',inferred:'Se completaron algunos campos porque no estaban explícitos en la fuente.'},
+  en:{update:'Visual format with Status, What is happening, Impact, Next step, and Timeline.',executive:'Short executive version focused on decision, impact, and next action.',jira:'Short Jira-ready comment, direct and actionable.',email:'Short professional email with greeting and closing.',one:'Single executive line, fast to read.',direct:'Direct',formal:'Formal',friendly:'Friendly',executiveTone:'Executive',short:'Short',medium:'Medium',detailed:'Detailed',what:'What is happening',status:'Status',impact:'Impact',next:'Next step',timeline:'Timeline',sources:'Source sentences used',explicit:'Mostly based on explicit source sentences.',inferred:'Some fields were completed because they were not explicit in the source.'}
+};
+
+function currentUi(){return UI_TEXT[$('language').value] || UI_TEXT.es;}
+function setStatus(message,type='info'){const box=$('status');box.className='status'+(type==='success'?' success':type==='error'?' error':'');box.textContent=message;}
+function normalizeWhitespace(text){return text.replace(/\u00A0/g,' ').replace(/[ \t]+/g,' ').replace(/\n{3,}/g,'\n\n').trim();}
+function removeTimestamps(text){return text.replace(/\b\d{1,2}:\d{2}(?:\s*-\s*\d{1,2}:\d{2})?:?/g,' ').replace(/\[(\d{1,2}:\d{2})(?:-\d{1,2}:\d{2})?\]/g,' ');}
+function removeFiller(text){return text.replace(/\b(mae|eh|mmm|diay|verdad|o sea|you know|basically|kind of|sort of)\b/gi,' ');}
+function protectCommonTerms(text){return text.replace(/\btipo de\b/gi,'tipo_de').replace(/\bservice type\b/gi,'service_type');}
+function restoreProtectedTerms(text){return text.replace(/tipo_de/gi,'tipo de').replace(/service_type/gi,'service type');}
+function preprocessText(text){let t=normalizeWhitespace(text);t=protectCommonTerms(t);t=removeTimestamps(t);t=removeFiller(t);t=t.replace(/\n+/g,'. ');t=t.replace(/\s+/g,' ').trim();return restoreProtectedTerms(t);} 
+function cleanSentence(sentence){let s=restoreProtectedTerms(sentence||'');s=s.replace(/^[,;:\-\s]+|[,;:\-\s]+$/g,'').replace(/^[-•]\s*/, '').replace(/\s+/g,' ').trim();if(!s) return '';if(s.length<20) return '';if(/^(sí|si|no|ajá|aja|claro|correcto|exacto|listo|yes|sure|ok|okay)$/i.test(s)) return '';if(/^(vea|mire|let me explain|i will tell you)/i.test(s)) return '';return s.charAt(0).toUpperCase()+s.slice(1);} 
+function splitSentences(text){const pre=preprocessText(text);if(!pre) return [];const raw=pre.split(/(?<=[.!?])\s+|(?<=:)\s+/).map(cleanSentence).filter(Boolean);return dedupeSentences(raw);} 
+function dedupeSentences(arr){const out=[];for(const s of arr){const norm=normalizeForCompare(s);if(!out.some(x=>similarity(norm,normalizeForCompare(x))>0.88)) out.push(s);}return out;}
+function normalizeForCompare(s){return s.toLowerCase().replace(/[^a-záéíóúñ0-9 ]/gi,' ').replace(/\s+/g,' ').trim();}
+function similarity(a,b){const A=new Set(a.split(' ').filter(Boolean));const B=new Set(b.split(' ').filter(Boolean));if(!A.size||!B.size) return 0;let overlap=0;for(const w of A) if(B.has(w)) overlap++;return overlap/Math.max(A.size,B.size);} 
+function detectInputLanguage(text){const lower=text.toLowerCase();const esHits=(lower.match(/\b(el|la|los|las|que|está|estan|todavía|aún|riesgo|retiro|próxima|seguimiento|impacto|para|como|quiero)\b/g)||[]).length;const enHits=(lower.match(/\b(the|is|are|still|risk|withdrawal|next|follow-up|impact|service|ready|want|need|should)\b/g)||[]).length;if(esHits>0&&enHits>0) return 'mixed'; if(esHits>enHits) return 'es'; if(enHits>esHits) return 'en'; return 'unknown';}
+function scoreInputQuality(text){let score=100;const lines=text.split(/\n/).filter(Boolean);const ts=(text.match(/\b\d{1,2}:\d{2}(?:-\d{1,2}:\d{2})?\b/g)||[]).length;const fill=(text.match(/\b(mae|eh|mmm|diay|verdad|o sea|you know|basically)\b/gi)||[]).length;score-=Math.min(28,ts*5);score-=Math.min(20,fill*2);if(lines.length>25) score-=10;if(score>=85) return $('language').value==='en'?'High':'Alta';if(score>=65) return $('language').value==='en'?'Medium':'Media';return $('language').value==='en'?'Low':'Baja';}
+function updateStats(){const text=$('inputText').value.trim();$('wordCount').textContent=text?text.split(/\s+/).length:0;$('lineCount').textContent=text?text.split(/\n/).filter(Boolean).length:0;$('qualityScore').textContent=text?scoreInputQuality(text):'—';const det=detectInputLanguage(text);const ui=currentUi();$('detectedLang').textContent=det==='es'?ui.detectedEs:det==='en'?ui.detectedEn:det==='mixed'?ui.detectedMixed:ui.detectedUnknown;}
+function shorten(sentence,max=150){if(!sentence) return ''; const clean=sentence.trim(); if(clean.length<=max) return clean; const cut=clean.slice(0,max); const last=cut.lastIndexOf(' '); return (last>40?cut.slice(0,last):cut).trim()+'…';}
+function containsAny(text, terms){const t=text.toLowerCase(); return terms.some(term=>t.includes(term));}
+function startsLikeAction(s){return /^(validar|revisar|confirmar|definir|coordinar|escalar|continuar|dar seguimiento|implementar|ajustar|probar|validar|review|validate|confirm|define|coordinate|escalate|continue|follow up|implement|adjust|test)/i.test(s);}
+function scoreSentence(sentence, group){const s=sentence.toLowerCase(); let score=0; for(const item of group.positive) if(s.includes(item)) score += item.length > 8 ? 4 : 2; for(const item of group.negative||[]) if(s.includes(item)) score -= 2; if(group.preferAction && startsLikeAction(sentence)) score += 5; if(group.preferShort && sentence.length<145) score += 2; if(group.preferLong && sentence.length>80) score += 1; if(/\b(done|completed|released|completado|listo)\b/.test(s) && group.name==='status') score += 5; if(/\b(blocked|bloqueado|on hold)\b/.test(s) && group.name==='status') score += 5; return score;}
+function bestSentences(sentences, group, max=2){return sentences.map(s=>({s,score:scoreSentence(s,group)})).filter(x=>x.score>0).sort((a,b)=>b.score-a.score||a.s.length-b.s.length).slice(0,max).map(x=>x.s);} 
+function firstMatch(text, regexes){for(const r of regexes){const m=text.match(r); if(m) return m[0];} return '';}
+function deriveStatus(text, sentences, lang){const lower=text.toLowerCase(); if(/\b(done|completed|released|completado|listo|implementado)\b/.test(lower)) return lang==='en'?'Completed / ready':'Completado / listo'; if(/\b(on hold|blocked|bloquead|pendiente de dependencia)\b/.test(lower)) return lang==='en'?'Blocked / pending dependency':'Bloqueado / pendiente de dependencia'; if(/\b(in progress|under review|reviewing|en progreso|en revisión|se está revisando|se está trabajando)\b/.test(lower)) return lang==='en'?'In progress / under review':'En progreso / en revisión'; const candidate=bestSentences(sentences,{name:'status',positive:['status','estado','ready','listo','done','completed','blocked','bloqueado','on hold','review','revisión','progress','progreso']},1)[0]; if(candidate) return shorten(candidate,115); return lang==='en'?'Under review':'En revisión';}
+function deriveTitle(text, lang){const lower=text.toLowerCase(); const map=[{k:['fraud','fraude','withdrawal','retiro'],es:'Update – Revisión de fraude en retiros',en:'Update – Withdrawal fraud review'},{k:['jira','tracking','trazabilidad'],es:'Update – Seguimiento y trazabilidad',en:'Update – Tracking follow-up'},{k:['integration','integración','service','servicio','endpoint'],es:'Update – Integración de servicio',en:'Update – Service integration'},{k:['deploy','release','producción','production','staging'],es:'Update – Seguimiento de release',en:'Update – Release follow-up'},{k:['qa','testing','prueba','validación'],es:'Update – Seguimiento de validación',en:'Update – Validation follow-up'}]; for(const item of map) if(item.k.some(k=>lower.includes(k))) return lang==='en'?item.en:item.es; const nouns=(normalizeForCompare(text).split(' ').filter(w=>w.length>5)).slice(0,5); const topic=nouns.slice(0,2).join(' '); return lang==='en' ? `Update – ${topic?topic.replace(/\b\w/g,c=>c.toUpperCase()):'Key progress'}` : `Update – ${topic?topic.replace(/\b\w/g,c=>c.toUpperCase()):'Avance clave'}`;}
+function buildSummary(text, lang, tone, lengthMode){const sentences=splitSentences(text); const lower=preprocessText(text).toLowerCase(); const maxHappening={short:2,medium:3,detailed:4}[lengthMode]||3; const groups={happening:{name:'happening',positive:['working','review','revis','analiz','valid','integr','desarroll','implement','testing','prueba','ajuste','endpoint','cambio','scope','modelo','service','flujo','ticket'],negative:['impact','timeline']},impact:{name:'impact',positive:['impact','afecta','afecta','riesgo','risk','dependency','dependencia','manual','bloquea','blocked','issue','error','false positive','falso positivo','regulado','critical'],preferShort:true},next:{name:'next',positive:['next step','próximo paso','follow up','dar seguimiento','validate','validar','confirm','confirmar','define','definir','review','revisar','coordinate','coordinar','escalate','escalar','deploy','desplegar'],preferAction:true},timeline:{name:'timeline',positive:['week','weeks','today','tomorrow','next week','this week','eta','timeline','estimated','hoy','mañana','próxima semana','esta semana','estimado','fecha','día','dias','semanas'],preferShort:true}};
+ const happening=bestSentences(sentences,groups.happening,maxHappening);
+ const impact=bestSentences(sentences,groups.impact,1)[0] || (lang==='en'?'No explicit impact was identified in the source notes.':'No se identificó un impacto explícito en las notas.');
+ let next=bestSentences(sentences,groups.next,1)[0];
+ if(!next){ next = /\b(next week|this week|tomorrow|hoy|mañana|próxima semana|esta semana)\b/.test(lower) ? (lang==='en'?'Continue follow-up according to the referenced timing.':'Dar seguimiento según la temporalidad mencionada.') : (lang==='en'?'Continue follow-up and confirm the next concrete action.':'Dar seguimiento y confirmar la siguiente acción concreta.'); }
+ let timeline=bestSentences(sentences,groups.timeline,1)[0];
+ const explicitTime=firstMatch(lower,[/\b(?:today|tomorrow|this week|next week|\d+\s*(?:day|days|week|weeks))\b/i,/\b(?:hoy|mañana|esta semana|próxima semana|\d+\s*(?:día|días|semana|semanas))\b/i,/\beta[:\s]+[^.\n]+/i]);
+ if(!timeline && explicitTime) timeline=explicitTime;
+ if(!timeline) timeline=lang==='en'?'No explicit timeline was mentioned.':'No se mencionó un timeline explícito.';
+ const explicitCount=[impact,next,timeline,...happening].filter(x=>x && !/No explicit|No se mencionó|No se identificó|Continue follow-up and confirm|Dar seguimiento y confirmar/.test(x)).length;
+ const inferred=explicitCount<3;
+ const summary={title:deriveTitle(text,lang),status:deriveStatus(text,sentences,lang),happening:happening.length?happening:[lang==='en'?'The source notes do not include enough concrete detail, but the item appears to still be under review.':'Las notas no incluyen suficiente detalle concreto, pero el tema aparenta seguir en revisión.'],impact:shorten(impact,170),nextStep:shorten(next,170),timeline:shorten(timeline,110),sources:dedupeSentences([...happening,impact,next,timeline]).slice(0,4),inferred};
+ return applyTone(summary,tone,lang,lengthMode);
+}
+function makeMoreFormal(s,lang){if(!s) return s; let out=s.replace(/^Dar seguimiento/i,'Se dará seguimiento').replace(/^Continue follow-up/i,'Follow-up will continue'); if(lang==='es') out=out.replace(/^Revisar /,'Se revisará ').replace(/^Confirmar /,'Se confirmará ').replace(/^Validar /,'Se validará '); else out=out.replace(/^Review /,'The team will review ').replace(/^Confirm /,'The team will confirm ').replace(/^Validate /,'The team will validate '); return out;}
+function makeFriendly(s,lang){if(!s) return s; return lang==='en' ? `Team aligned: ${s.charAt(0).toLowerCase()+s.slice(1)}` : `Equipo alineado: ${s.charAt(0).toLowerCase()+s.slice(1)}`;}
+function applyTone(summary,tone,lang,lengthMode){const adjust=x=>tone==='formal'?makeMoreFormal(x,lang):tone==='friendly'?makeFriendly(x,lang):tone==='executive'?shorten(x,100):x; summary.happening=summary.happening.map(adjust); summary.impact=adjust(summary.impact); summary.nextStep=adjust(summary.nextStep); if(tone==='executive' && lengthMode!=='detailed') summary.happening=summary.happening.slice(0,2); return summary;}
+function formatSummary(summary,lang,template,lengthMode){const L=LABELS[lang]; const concise=lengthMode==='short'; const happening=(concise?summary.happening.slice(0,2):summary.happening).map(x=>`- ${x}`).join('\n');
+ if(template==='one') return `📢 ${summary.title}: 🟡 ${summary.status}; 🧠 ${summary.nextStep.replace(/\.$/,'')}; ⏳ ${summary.timeline.replace(/\.$/,'')}.`;
+ if(template==='jira') return lang==='en' ? `📢 ${summary.title}\n\n🟡 Current status: ${summary.status}.\n⚙️ ${summary.happening[0]}\n⚠️ Impact: ${summary.impact}\n🧠 Next step: ${summary.nextStep}\n⏳ Timeline: ${summary.timeline}` : `📢 ${summary.title}\n\n🟡 Estado actual: ${summary.status}.\n⚙️ ${summary.happening[0]}\n⚠️ Impacto: ${summary.impact}\n🧠 Próximo paso: ${summary.nextStep}\n⏳ Timeline: ${summary.timeline}`;
+ if(template==='email') return lang==='en' ? `Subject: ${summary.title}\n\nHello team,\n\nPlease find below the current update:\n\nStatus: ${summary.status}.\nWhat is happening: ${summary.happening.join(' ')}\nImpact: ${summary.impact}\nNext step: ${summary.nextStep}\nTimeline: ${summary.timeline}\n\nBest regards,` : `Asunto: ${summary.title}\n\nHola equipo,\n\nComparto el update actual:\n\nEstado: ${summary.status}.\nQué está pasando: ${summary.happening.join(' ')}\nImpacto: ${summary.impact}\nPróximo paso: ${summary.nextStep}\nTimeline: ${summary.timeline}\n\nSaludos,`;
+ if(template==='executive') return lang==='en' ? `📢 ${summary.title}\n\n🟡 Status\n- ${summary.status}\n\n⚠️ Impact\n- ${summary.impact}\n\n🧠 Next step\n- ${summary.nextStep}\n\n⏳ Timeline\n- ${summary.timeline}` : `📢 ${summary.title}\n\n🟡 Estado\n- ${summary.status}\n\n⚠️ Impacto\n- ${summary.impact}\n\n🧠 Próximo paso\n- ${summary.nextStep}\n\n⏳ Timeline\n- ${summary.timeline}`;
+ return lang==='en' ? `📢 ${summary.title}\n\n🟡 Status\n- ${summary.status}\n\n⚙️ What is happening\n${happening}\n\n⚠️ Impact\n- ${summary.impact}\n\n🧠 Next step\n- ${summary.nextStep}\n\n⏳ Timeline\n- ${summary.timeline}` : `📢 ${summary.title}\n\n🟡 Estado\n- ${summary.status}\n\n⚙️ Qué está pasando\n${happening}\n\n⚠️ Impacto\n- ${summary.impact}\n\n🧠 Próximo paso\n- ${summary.nextStep}\n\n⏳ Timeline\n- ${summary.timeline}`;
+}
+function detectGoalSentence(sentences,lang){const patterns=lang==='en' ? ['i want','we need','the system should','must','should allow','enable'] : ['quiero','necesitamos','el sistema debe','debe permitir','permitir','habilitar','soportar']; return sentences.find(s=>containsAny(s.toLowerCase(),patterns)) || '';}
+function buildUserStory(text,lang){const sentences=splitSentences(text); const lower=preprocessText(text).toLowerCase(); const goal=detectGoalSentence(sentences,lang); const scopeCandidates=bestSentences(sentences,{name:'scope',positive:['mostrar','visualizar','abrir','validar','bloquear','autorizar','integración','servicio','modelo','riesgo','trazabilidad','revisar','flujo','display','open','validate','block','approve','integration','service','model','risk','tracking','review','flow','endpoint','deploy','modal']},4);
+ let description=''; let value='';
+ if(lang==='en'){
+   if(goal) description = goal.startsWith('As a') ? goal : `As a user, I want ${goal.charAt(0).toLowerCase()+goal.slice(1)} so that the requested flow can be executed correctly.`;
+   else if(/fraud|withdrawal|risk/.test(lower)) description='As a user, I want the system to identify and manage risky withdrawals so that suspicious cases can be reviewed before completion.';
+   else if(/jira|tracking/.test(lower)) description='As a user, I want the work to be tracked clearly so that progress, ownership, and follow-up remain visible.';
+   else if(/service|integrati|endpoint|flow/.test(lower)) description='As a user, I want the required service or flow to work end to end so that the requested operation can be completed correctly.';
+   else description='As a user, I want the requested flow to be handled clearly so that execution and follow-up are consistent.';
+   value=bestSentences(sentences,{name:'value',positive:['so that','in order to','avoid','reduce','improve','visibility','control','tracking','manual','risk','impact']},1)[0] || 'This will improve control, visibility, and operational follow-up.';
+ } else {
+   if(goal) description = /^Como /i.test(goal) ? goal : `Como usuario, quiero que ${goal.charAt(0).toLowerCase()+goal.slice(1)} para que el flujo solicitado se ejecute correctamente.`;
+   else if(/fraud|retiro|fraude|risk/.test(lower)) description='Como usuario, quiero que el sistema identifique y gestione retiros riesgosos para que los casos sospechosos puedan revisarse antes de completarse.';
+   else if(/jira|trazabilidad|tracking/.test(lower)) description='Como usuario, quiero que el trabajo tenga trazabilidad clara para que el avance, la responsabilidad y el seguimiento se mantengan visibles.';
+   else if(/service|servicio|integraci|endpoint|flujo/.test(lower)) description='Como usuario, quiero que el servicio o flujo requerido funcione de extremo a extremo para que la operación solicitada pueda completarse correctamente.';
+   else description='Como usuario, quiero que el flujo solicitado se gestione de forma clara para que la ejecución y el seguimiento sean consistentes.';
+   value=bestSentences(sentences,{name:'value',positive:['para','con el fin de','evitar','reducir','mejorar','visibilidad','control','trazabilidad','manual','riesgo','impacto']},1)[0] || 'Esto mejorará el control, la visibilidad y el seguimiento operativo.';
+ }
+ const scope=(scopeCandidates.length?scopeCandidates:[lang==='en'?'Review the request and define the minimum expected behavior.':'Revisar la solicitud y definir el comportamiento mínimo esperado.']).map(x=>`- ${shorten(x,160)}`).join('\n');
+ return `Description\n${shorten(description,260)}\n\nValue\n${shorten(value,200)}\n\nScope\n${scope}`;
+}
+function buildFallback(input,lang,mode){const clean=shorten(preprocessText(input)||input,180); if(mode==='userstory'){return lang==='en'?`Description\nAs a user, I want the requested flow to be supported clearly so that the process can be handled consistently.\n\nValue\nThis will improve control, visibility, and operational follow-up.\n\nScope\n- Review the request and define the minimum expected behavior.\n- Validate the required flow based on the provided notes.\n- Confirm the next concrete action.`:`Description\nComo usuario, quiero que el flujo solicitado se soporte de forma clara para que el proceso se gestione de manera consistente.\n\nValue\nEsto mejorará el control, la visibilidad y el seguimiento operativo.\n\nScope\n- Revisar la solicitud y definir el comportamiento mínimo esperado.\n- Validar el flujo requerido con base en las notas compartidas.\n- Confirmar la siguiente acción concreta.`;} return lang==='en'?`📢 Update – Key Progress\n\n🟡 Status\n- Under review\n\n⚙️ What is happening\n- ${clean || 'The request is being reviewed based on the provided notes.'}\n\n⚠️ Impact\n- No explicit impact was identified in the source notes.\n\n🧠 Next step\n- Continue follow-up and confirm the next concrete action.\n\n⏳ Timeline\n- No explicit timeline was mentioned.`:`📢 Update – Avance clave\n\n🟡 Estado\n- En revisión\n\n⚙️ Qué está pasando\n- ${clean || 'La solicitud se está revisando con base en las notas compartidas.'}\n\n⚠️ Impacto\n- No se identificó un impacto explícito en las notas.\n\n🧠 Próximo paso\n- Dar seguimiento y confirmar la siguiente acción concreta.\n\n⏳ Timeline\n- No se mencionó un timeline explícito.`;}
+function renderTrace(summary,lang){const L=LABELS[lang]; const box=$('traceBox'); if(!summary || !summary.sources || !summary.sources.length){box.classList.add('hidden'); box.innerHTML=''; return;} box.classList.remove('hidden'); box.innerHTML=`<strong>${L.sources}</strong>${summary.sources.map(s=>`• ${escapeHtml(shorten(s,140))}`).join('<br>')}<br><br>${summary.inferred?L.inferred:L.explicit}`;}
+function escapeHtml(s){return s.replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#039;"}[m]));}
+function updateTemplatePreview(){const lang=$('language').value; const mode=$('workMode').value; if(mode==='userstory'){$('summaryControls').style.display='none'; $('userStoryControls').style.display='block'; $('userStoryHint').textContent=lang==='en'?'The user story will be generated in English with the fixed structure: Description, Value, Scope.':'La historia de usuario se generará en español con la estructura fija: Description, Value, Scope.'; return;} $('summaryControls').style.display='block'; $('userStoryControls').style.display='none'; const L=LABELS[lang]; const t=$('template').value; const toneMap={direct:L.direct,formal:L.formal,friendly:L.friendly,executive:L.executiveTone}; const lenMap={short:L.short,medium:L.medium,detailed:L.detailed}; $('templatePreview').textContent=`${L[t]} Tono: ${toneMap[$('tone').value]}. Longitud: ${lenMap[$('lengthMode').value]}.`;}
+function generateSummary(){const input=$('inputText').value.trim(); const lang=$('language').value; const mode=$('workMode').value; const template=$('template').value; const tone=$('tone').value; const lengthMode=$('lengthMode').value; const output=$('output'); const ui=currentUi(); if(!input){setStatus(ui.pasteFirst,'error'); return;} try{setStatus(ui.generating); let formatted=''; let summary=null; if(mode==='userstory'){formatted=buildUserStory(input,lang);} else {summary=buildSummary(input,lang,tone,lengthMode); formatted=formatSummary(summary,lang,template,lengthMode);} if(!formatted || !formatted.trim()) formatted=buildFallback(input,lang,mode); output.classList.remove('empty'); output.textContent=formatted; renderTrace(summary,lang); setStatus(ui.generated,'success');}catch(error){output.classList.remove('empty'); output.textContent=buildFallback(input,lang,mode); $('traceBox').classList.add('hidden'); setStatus(`❌ ${error.message}`,'error');}}
+async function copyOutput(){const text=$('output').textContent.trim(); const ui=currentUi(); if(!text || $('output').classList.contains('empty')){setStatus(ui.nothingToCopy,'error'); return;} try{await navigator.clipboard.writeText(text); setStatus(ui.copied,'success');}catch(e){setStatus(ui.copyFailed,'error');}}
+function clearAll(){$('inputText').value=''; $('output').className='output empty'; $('output').textContent=currentUi().emptyOutput; $('traceBox').classList.add('hidden'); $('traceBox').innerHTML=''; updateStats(); setStatus(currentUi().cleared,'success');}
+function toggleTheme(){document.body.classList.toggle('dark-mode'); localStorage.setItem('bytes_brain_theme',document.body.classList.contains('dark-mode')?'dark':'light');}
+function loadTheme(){const saved=localStorage.getItem('bytes_brain_theme'); if(saved==='dark') document.body.classList.add('dark-mode');}
+$('generateBtn').addEventListener('click',generateSummary); $('copyBtn').addEventListener('click',copyOutput); $('clearBtn').addEventListener('click',clearAll); $('themeToggleBtn').addEventListener('click',toggleTheme); $('inputText').addEventListener('input',updateStats); ['workMode','language','template','tone','lengthMode'].forEach(id=>{$(id).addEventListener('change',()=>{updateTemplatePreview(); updateStats(); if($('output').classList.contains('empty')) $('output').textContent=currentUi().emptyOutput; setStatus(currentUi().ready);});});
+loadTheme(); updateTemplatePreview(); updateStats(); $('output').textContent=currentUi().emptyOutput; setStatus(currentUi().ready);
+</script>
+</body>
+</html>
